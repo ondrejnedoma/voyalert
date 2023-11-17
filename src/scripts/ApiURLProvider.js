@@ -1,6 +1,8 @@
+import {DEV_URL} from "@env"
+
 export default function apiURLProvider() {
   if (process.env.NODE_ENV === 'development') {
-    return 'http://10.4.4.172:3000';
+    return DEV_URL;
   } else {
     return '';
   }

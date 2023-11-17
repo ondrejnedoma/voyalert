@@ -8,6 +8,7 @@ import {
 } from 'react-native-paper';
 import apiList from '../scripts/ApiList';
 import React from 'react';
+import OneVoy from '../OneVoy';
 
 export default function HomeScreen({navigation}) {
   const [voyList, setVoyList] = React.useState([]);
@@ -39,17 +40,20 @@ export default function HomeScreen({navigation}) {
           disabled={listLoading}
         />
       </View>
+      <View style={{marginHorizontal: 24}}>
       <View
         style={{
           flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 32,
-          marginHorizontal: 24,
+          alignItems: 'center'
         }}>
-        <Text variant="displaySmall">VoyAlert</Text>
+        <Text style={{marginTop: 32, marginBottom: 42}} variant="displaySmall">VoyAlert</Text>
         {listLoading ? (
           <ActivityIndicator style={{marginHorizontal: 16}} />
         ) : null}
+      </View>
+      {voyList.map(voy => (
+        <OneVoy key={voy.dataSource + voy.voyNumber} dataSource={voy.dataSource} voyNumber={voy.voyNumber}/>
+      ))}
       </View>
       <FAB
         icon="plus"
@@ -57,9 +61,6 @@ export default function HomeScreen({navigation}) {
         size="medium"
         onPress={() => navigation.navigate('Add')}
       />
-      {voyList.map(voy => (
-        <Text key={voy.dataSource + voy.voyNumber}>{voy.voyNumber}</Text>
-      ))}
       <Snackbar
         visible={showErrorSnackbar}
         onDismiss={() => setShowErrorSnackbar(false)}>

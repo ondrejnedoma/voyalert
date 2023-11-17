@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930297306388",
+    "project_id": "voyalert",
+    "storage_bucket": "voyalert.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930297306388:android:5619010a57d5a7c6a33601",
+        "android_client_info": {
+          "package_name": "me.ondrejnedoma.voyalert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW8JJNKqQnSsMYk54JKvlTdlepaCDV21o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

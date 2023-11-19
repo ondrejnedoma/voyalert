@@ -6,19 +6,20 @@ import {
   ActivityIndicator,
   Snackbar,
 } from 'react-native-paper';
+import {useFocusEffect} from '@react-navigation/native';
 import apiList from '../scripts/ApiList';
 import React from 'react';
 import OneVoy from '../OneVoy';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({route, navigation}) {
   const [voyList, setVoyList] = React.useState([]);
-  const [listLoading, setListLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
   const handleList = () => {
-    setListLoading(true);
+    setLoading(true);
     apiList().then(data => {
-      setListLoading(false);
+      setLoading(false);
       if (data.ok) {
         setVoyList(data.data);
       } else {
@@ -27,34 +28,43 @@ export default function HomeScreen({navigation}) {
       }
     });
   };
-  React.useEffect(() => {
-    handleList();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      handleList();
+    }, []),
+  );
+  const handleOneVoyClick = ({dataSource, voyNumber}) => {
+    navigation.navigate('Config', {dataSource, voyNumber});
+  };
   return (
-    <SafeAreaView style={{flexGrow: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
         <IconButton
           icon="refresh"
           size={24}
           onPress={handleList}
-          disabled={listLoading}
+          disabled={loading}
         />
       </View>
-      <View style={{marginHorizontal: 24}}>
       <View
         style={{
+          marginTop: 32,
+          marginBottom: 42,
+          marginHorizontal: 24,
           flexDirection: 'row',
-          alignItems: 'center'
+          alignItems: 'center',
         }}>
-        <Text style={{marginTop: 32, marginBottom: 42}} variant="displaySmall">VoyAlert</Text>
-        {listLoading ? (
-          <ActivityIndicator style={{marginHorizontal: 16}} />
-        ) : null}
+        <Text variant="displaySmall">VoyAlert</Text>
+        {loading ? <ActivityIndicator style={{marginHorizontal: 16}} /> : null}
       </View>
       {voyList.map(voy => (
-        <OneVoy key={voy.dataSource + voy.voyNumber} dataSource={voy.dataSource} voyNumber={voy.voyNumber}/>
+        <OneVoy
+          key={voy.dataSource + voy.voyNumber}
+          dataSource={voy.dataSource}
+          voyNumber={voy.voyNumber}
+          onPress={handleOneVoyClick}
+        />
       ))}
-      </View>
       <FAB
         icon="plus"
         style={styles.fab}

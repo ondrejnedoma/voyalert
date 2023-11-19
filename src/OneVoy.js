@@ -1,18 +1,23 @@
-import { View } from 'react-native'
-import { useTheme, Text } from 'react-native-paper';
-import sz from './img/sz.svg'
-import React from 'react'
+import {View} from 'react-native';
+import {TouchableRipple, Text} from 'react-native-paper';
+import SourceLogo from './SourceLogo';
+import React from 'react';
 
-export default function OneVoy({ dataSource, voyNumber }) {
-  const theme = useTheme()
-  const logoList = {
-    sz: sz
-  }
-  const Logo = logoList[dataSource]
+export default function OneVoy({dataSource, voyNumber, onPress}) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Logo width={24} color={theme.colors.primary} />
-      <Text style={{marginHorizontal: 8}} variant='titleLarge'>{voyNumber}</Text>
-    </View>
-  )
+    <TouchableRipple onPress={() => onPress({dataSource, voyNumber})}>
+      <View
+        style={{
+          marginHorizontal: 24,
+          marginVertical: 6,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <SourceLogo dataSource={dataSource} size={24} />
+        <Text style={{marginHorizontal: 8}} variant="titleLarge">
+          {voyNumber}
+        </Text>
+      </View>
+    </TouchableRipple>
+  );
 }

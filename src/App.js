@@ -18,6 +18,8 @@ import merge from 'deepmerge';
 
 import HomeScreen from './screens/HomeScreen';
 import AddScreen from './screens/AddScreen';
+import ConfigScreen from './screens/ConfigScreen';
+import ConfigRouteScreen from './screens/ConfigRouteScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +53,8 @@ function App() {
           screenOptions={{headerShown: false}}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Add" component={AddScreen} />
+          <Stack.Screen name="Config" component={ConfigScreen} />
+          <Stack.Screen name="ConfigRoute" component={ConfigRouteScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

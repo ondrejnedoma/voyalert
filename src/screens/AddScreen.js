@@ -7,13 +7,10 @@ import {
   HelperText,
   Snackbar,
 } from 'react-native-paper';
-import RadioButtonWithLabel from '../RadioButtonWithLabel';
-import {useNetInfo} from '@react-native-community/netinfo';
 import apiAdd from '../scripts/ApiAdd';
 import React from 'react';
 
 export default function AddScreen({navigation}) {
-  const {type, isConnected} = useNetInfo();
   const [dataSource, setDataSource] = React.useState('');
   const [voyNumber, setVoyNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -68,14 +65,11 @@ export default function AddScreen({navigation}) {
               style={{alignSelf: 'flex-start', marginTop: 8}}
               icon="check"
               mode="contained"
-              disabled={!isConnected || loading}
+              disabled={loading}
               loading={loading}
               onPress={handleAdd}>
               Finish
             </Button>
-            {!isConnected ? (
-              <HelperText>Not connected to internet</HelperText>
-            ) : null}
           </>
         ) : null}
       </View>

@@ -1,4 +1,4 @@
-import {View, FlatList, SafeAreaView} from 'react-native';
+import {View, SafeAreaView} from 'react-native';
 import {Text, ActivityIndicator, Checkbox, Snackbar} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import apiRoute from '../scripts/ApiRoute';
@@ -67,7 +67,6 @@ export default function ConfigRouteScreen({route, navigation}) {
       newCheckedStops.push(stop);
     }
     const ok = await handleSetConfigStops(newCheckedStops);
-    console.log(ok);
     if (ok) {
       setCheckedStops(newCheckedStops);
     } else {
@@ -100,9 +99,7 @@ export default function ConfigRouteScreen({route, navigation}) {
                 style={{paddingHorizontal: 30}}
                 labelVariant="bodyMedium"
                 label={stop}
-                status={
-                  checkedStops.indexOf(stop) > -1 ? 'checked' : 'unchecked'
-                }
+                status={checkedStops.includes(stop) ? 'checked' : 'unchecked'}
                 onPress={() => {
                   handleOnStopClick(stop);
                 }}

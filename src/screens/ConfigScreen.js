@@ -1,14 +1,5 @@
 import {View, SafeAreaView} from 'react-native';
-import {
-  Text,
-  TextInput,
-  HelperText,
-  IconButton,
-  RadioButton,
-  Snackbar,
-  Button,
-} from 'react-native-paper';
-import RadioButtonWithLabel from '../RadioButtonWithLabel';
+import {Text, IconButton, Snackbar, Button} from 'react-native-paper';
 import SourceLogo from '../SourceLogo';
 import apiDelete from '../scripts/ApiDelete';
 import React from 'react';

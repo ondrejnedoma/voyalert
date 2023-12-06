@@ -47,7 +47,7 @@ export default function AddScreen({navigation}) {
       use: 'This data source is applicable for all vehicles in the IDSOK system',
       pros: [],
       cons: [],
-      disabled: true,
+      disabled: false,
     },
   ];
   const [dataSourceDialogVisible, setDataSourceDialogVisible] =

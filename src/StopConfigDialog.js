@@ -50,6 +50,17 @@ export default function StopConfigDialog({
             disabled={loading || !options.isArrivalEnabled}
           />
           <Checkbox.Item
+            labelStyle={{paddingHorizontal: 16}}
+            label="Alarm at arrival"
+            status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
+            onPress={() =>
+              onConfigSet('alarmArrival', !stopConfig.alarmArrival)
+            }
+            disabled={
+              loading || !options.isArrivalEnabled || !stopConfig.notifyArrival
+            }
+          />
+          <Checkbox.Item
             label="Notification at departure"
             status={stopConfig.notifyDeparture ? 'checked' : 'unchecked'}
             onPress={() =>
@@ -58,20 +69,17 @@ export default function StopConfigDialog({
             disabled={loading || !options.isDepartureEnabled}
           />
           <Checkbox.Item
-            label="Alarm at arrival"
-            status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
-            onPress={() =>
-              onConfigSet('alarmArrival', !stopConfig.notifyArrival)
-            }
-            disabled={loading || !options.isArrivalEnabled}
-          />
-          <Checkbox.Item
+            labelStyle={{paddingHorizontal: 16}}
             label="Alarm at departure"
             status={stopConfig.alarmDeparture ? 'checked' : 'unchecked'}
             onPress={() =>
-              onConfigSet('alarmDeparture', !stopConfig.notifyArrival)
+              onConfigSet('alarmDeparture', !stopConfig.alarmDeparture)
             }
-            disabled={loading || !options.isDepartureEnabled}
+            disabled={
+              loading ||
+              !options.isDepartureEnabled ||
+              !stopConfig.notifyDeparture
+            }
           />
         </Dialog.Content>
       </Dialog>

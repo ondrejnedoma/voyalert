@@ -1,5 +1,8 @@
 import messaging from '@react-native-firebase/messaging';
-import notifee, {AndroidImportance} from '@notifee/react-native';
+import notifee, {
+  AndroidImportance,
+  AndroidCategory,
+} from '@notifee/react-native';
 import {Appearance} from 'react-native';
 
 messaging().registerDeviceForRemoteMessages();
@@ -12,11 +15,12 @@ const notificationIcons = {
 };
 
 async function onMessageReceived(message) {
+  console.log(message.data.notificationType);
   const darkScheme = Appearance.getColorScheme() === 'dark';
   const channelId = await notifee.createChannel({
     id: 'voyalert',
     name: 'VoyAlert',
-    sound: 'default',
+    importance: AndroidImportance.HIGH,
   });
   await notifee.displayNotification({
     title: message.data.voyNumber,
@@ -25,6 +29,10 @@ async function onMessageReceived(message) {
       `${message.data.stop} at ${message.data.time}`,
     android: {
       channelId,
+      category:
+        message.data.notificationType === 'alarm'
+          ? AndroidCategory.CALL
+          : undefined,
       importance: AndroidImportance.HIGH,
       //   smallIcon: 'check', // optional, defaults to 'ic_launcher'.
       // pressAction is needed if you want the notification to open the app when pressed
@@ -34,6 +42,27 @@ async function onMessageReceived(message) {
       largeIcon: darkScheme
         ? notificationIcons[message.data.dataSource].dark
         : notificationIcons[message.data.dataSource].light,
+      fullScreenAction:
+        message.data.notificationType === 'alarm'
+          ? {
+              id: 'default',
+            }
+          : undefined,
+      actions: [
+        {
+          title: 'Decline',
+          pressAction: {
+            id: 'decline-call',
+          },
+        },
+        {
+          title: 'Answer',
+          pressAction: {
+            id: 'answer-call',
+          },
+        },
+      ],
+      lightUpScreen: true,
     },
   });
 }

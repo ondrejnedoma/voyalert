@@ -1,23 +1,44 @@
-import {View, SafeAreaView} from 'react-native';
-import {Text, ActivityIndicator, Checkbox, Snackbar} from 'react-native-paper';
+import {View, ScrollView, SafeAreaView} from 'react-native';
+import {
+  Text,
+  ActivityIndicator,
+  Checkbox,
+  Snackbar,
+  List,
+  TouchableRipple,
+  Icon,
+  useTheme,
+} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import apiRoute from '../scripts/ApiRoute';
 import apiGetConfig from '../scripts/ApiGetConfig';
-import apiSetConfig from '../scripts/ApiSetConfig';
-import React from 'react';
-import {ScrollView} from 'react-native-gesture-handler';
+import React, {useEffect} from 'react';
+import StopConfigDialog from '../StopConfigDialog';
 
 export default function ConfigRouteScreen({route, navigation}) {
   const {dataSource, voyNumber} = route.params;
-  const [stops, setStops] = React.useState([]);
-  const [checkedStops, setCheckedStops] = React.useState([]);
+  const [stops, setStops] = React.useState();
+  const [config, setConfig] = React.useState();
+  const [stopConfigDialogVisible, setStopConfigDialogVisible] =
+    React.useState(false);
+  const [stopConfigDialogConfig, setStopConfigDialogConfig] = React.useState({
+    notifyArrival: false,
+    notifyDeparture: false,
+    alarmArrival: false,
+    alarmDeparture: false,
+  });
+  const [stopConfigDialogStopName, setStopConfigDialogStopName] =
+    React.useState('');
+  const [stopConfigDialogOptions, setStopConfigDialogOptions] = React.useState({
+    isArrivalEnabled: true,
+    isDepartureEnabled: true,
+  });
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
+  const theme = useTheme();
   const handleRoute = async () => {
-    setLoading(true);
     const data = await apiRoute({dataSource, voyNumber});
-    setLoading(false);
     if (data.ok) {
       setStops(data.data);
     } else {
@@ -25,65 +46,81 @@ export default function ConfigRouteScreen({route, navigation}) {
       setShowErrorSnackbar(true);
     }
   };
-  const handleGetConfigStops = async () => {
-    setLoading(true);
-    const data = await apiGetConfig({
-      dataSource,
-      voyNumber,
-      field: 'stops',
-    });
-    setLoading(false);
+  const handleGetConfig = async () => {
+    const data = await apiGetConfig({dataSource, voyNumber});
     if (data.ok) {
-      setCheckedStops(data.data);
+      setConfig(data.data);
     } else {
       setErrorSnackbarText(data.error);
       setShowErrorSnackbar(true);
     }
   };
-  const handleSetConfigStops = async stopsToSet => {
-    setLoading(true);
-    const data = await apiSetConfig({
-      dataSource,
-      voyNumber,
-      field: 'stops',
-      value: stopsToSet,
-    });
-    setLoading(false);
-    if (!data.ok) {
-      setErrorSnackbarText(data.error);
-      setShowErrorSnackbar(true);
-      return false;
+  const handleOnStopClick = stopName => {
+    if (config.stops && config.stops.some(stop => stop.name === stopName)) {
+      const stopConfig = config.stops.find(stop => stop.name === stopName);
+      setStopConfigDialogConfig(stopConfig);
     }
-    return true;
-  };
-  const handleOnStopClick = async stop => {
-    const prevCheckedStops = [...checkedStops];
-    const checkedStopsIndex = prevCheckedStops.indexOf(stop);
-    let newCheckedStops = [...prevCheckedStops];
-
-    if (checkedStopsIndex > -1) {
-      newCheckedStops.splice(checkedStopsIndex, 1);
-    } else {
-      newCheckedStops.push(stop);
+    setStopConfigDialogStopName(stopName);
+    let dialogOptions = {...stopConfigDialogOptions};
+    if (stops[stops.length - 1] === stopName) {
+      dialogOptions.isDepartureEnabled = false;
+    } else if (stops[0] === stopName) {
+      dialogOptions.isArrivalEnabled = false;
     }
-    const ok = await handleSetConfigStops(newCheckedStops);
-    if (ok) {
-      setCheckedStops(newCheckedStops);
-    } else {
-      setCheckedStops(prevCheckedStops);
+    if (dataSource === 'idsok') {
+      dialogOptions.isArrivalEnabled = false;
     }
+    setStopConfigDialogOptions(dialogOptions);
+    setStopConfigDialogVisible(true);
   };
   useFocusEffect(
     React.useCallback(() => {
-      handleRoute();
-      handleGetConfigStops();
+      const fetchData = async () => {
+        setLoading(true);
+        await handleRoute();
+        await handleGetConfig();
+        setLoading(false);
+      };
+      fetchData();
     }, []),
   );
+  const onDialogDismissed = async () => {
+    setStopConfigDialogVisible(false);
+    setStopConfigDialogStopName('');
+    setStopConfigDialogConfig({
+      notifyArrival: false,
+      notifyDeparture: false,
+      alarmArrival: false,
+      alarmDeparture: false,
+    });
+    setStopConfigDialogOptions({
+      isArrivalEnabled: true,
+      isDepartureEnabled: true,
+    });
+    setLoading(true);
+    await handleGetConfig();
+    setLoading(false);
+  };
+  const isSomeAlertEnabled = stopName => {
+    if (config.stops && config.stops.some(stop => stop.name === stopName)) {
+      const stopData = config.stops.find(stop => stop.name === stopName);
+      if (
+        stopData.notifyArrival ||
+        stopData.notifyDeparture ||
+        stopData.alarmArrival ||
+        stopData.alarmDeparture
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View
         style={{
           marginTop: 84,
+          marginBottom: 32,
           marginHorizontal: 24,
           flexDirection: 'row',
           alignItems: 'center',
@@ -92,22 +129,44 @@ export default function ConfigRouteScreen({route, navigation}) {
         {loading ? <ActivityIndicator style={{marginHorizontal: 16}} /> : null}
       </View>
       <ScrollView>
-        {stops.length > 0
+        {stops && config
           ? stops.map(stop => (
-              <Checkbox.Item
+              <TouchableRipple
                 key={stop}
-                style={{paddingHorizontal: 30}}
-                labelVariant="bodyMedium"
-                label={stop}
-                status={checkedStops.includes(stop) ? 'checked' : 'unchecked'}
-                onPress={() => {
-                  handleOnStopClick(stop);
-                }}
-                disabled={loading}
-              />
+                style={{paddingHorizontal: 30, paddingVertical: 16}}
+                onPress={() => handleOnStopClick(stop)}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Text variant="bodyMedium">{stop}</Text>
+                  {isSomeAlertEnabled(stop) ? (
+                    <Icon
+                      source="bell"
+                      size={18}
+                      color={theme.colors.primary}
+                    />
+                  ) : null}
+                </View>
+              </TouchableRipple>
             ))
           : null}
       </ScrollView>
+      {config ? (
+        <StopConfigDialog
+          visible={stopConfigDialogVisible}
+          onDismiss={onDialogDismissed}
+          dataSource={dataSource}
+          voyNumber={voyNumber}
+          stopName={stopConfigDialogStopName}
+          config={stopConfigDialogConfig}
+          options={stopConfigDialogOptions}
+          setShowErrorSnackbar={setShowErrorSnackbar}
+          setErrorSnackbarText={setErrorSnackbarText}
+        />
+      ) : null}
       <Snackbar
         visible={showErrorSnackbar}
         onDismiss={() => setShowErrorSnackbar(false)}>

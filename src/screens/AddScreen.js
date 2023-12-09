@@ -43,10 +43,10 @@ export default function AddScreen({navigation}) {
     },
     {
       value: 'idsok',
-      name: 'IDSOK (CestujOK) (soon)',
+      name: 'IDSOK (CestujOK)',
       use: 'This data source is applicable for all vehicles in the IDSOK system',
-      pros: [],
-      cons: [],
+      pros: ["Data based on real-time vehicle position - precise data"],
+      cons: ["Can't be set to alert about the arrival to the final stop"],
       disabled: false,
     },
   ];

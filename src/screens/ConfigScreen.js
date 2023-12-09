@@ -39,7 +39,9 @@ export default function ConfigScreen({route, navigation}) {
             {voyNumber}
           </Text>
         </View>
-        <Text style={{marginTop: 42}}>Stops to alert at:</Text>
+        <Text style={{marginTop: 42}} variant="titleMedium">
+          Stops to alert at:
+        </Text>
         <Button
           style={{alignSelf: 'flex-start', marginTop: 8}}
           icon="timeline-alert"

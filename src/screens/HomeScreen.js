@@ -5,6 +5,7 @@ import {
   IconButton,
   ActivityIndicator,
   Snackbar,
+  Menu,
 } from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import apiList from '../scripts/ApiList';
@@ -16,6 +17,7 @@ export default function HomeScreen({route, navigation}) {
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
+  const [menuVisible, setMenuVisible] = React.useState(false);
   const handleList = () => {
     setLoading(true);
     apiList().then(data => {
@@ -45,6 +47,20 @@ export default function HomeScreen({route, navigation}) {
           onPress={handleList}
           disabled={loading}
         />
+        <Menu
+          style={{marginTop: 8}}
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={
+            <IconButton
+              icon="dots-vertical"
+              size={24}
+              onPress={() => setMenuVisible(true)}
+            />
+          }>
+          <Menu.Item title="Settings" />
+          <Menu.Item title="Donate please 🥺" />
+        </Menu>
       </View>
       <View
         style={{

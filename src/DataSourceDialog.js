@@ -38,6 +38,9 @@ export default function DataSourceDialog({visible, setVisible, content}) {
               </View>
             ))}
           </View>
+          <Text style={{marginTop: 18}} variant="bodyMedium">
+            {content.hint}
+          </Text>
         </Dialog.Content>
       </Dialog>
     </Portal>

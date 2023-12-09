@@ -31,6 +31,7 @@ export default function AddScreen({navigation}) {
         'Alerts only at railway stations with dispatchers',
         'Alerts can be around 2 minutes delayed',
       ],
+      hint: 'Enter the train number without the train type - 11085',
       disabled: false,
     },
     {
@@ -44,9 +45,10 @@ export default function AddScreen({navigation}) {
     {
       value: 'idsok',
       name: 'IDSOK (CestujOK)',
-      use: 'This data source is applicable for all vehicles in the IDSOK system',
-      pros: ["Data based on real-time vehicle position - precise data"],
+      use: 'This data source is applicable for all vehicles in the IDSOK system - cestujok.cz',
+      pros: ['Based on real-time vehicle position - precise data'],
       cons: ["Can't be set to alert about the arrival to the final stop"],
+      hint: 'Enter the number exactly as it appears on CestujOK, without letters - 890302 39, 14018',
       disabled: false,
     },
   ];

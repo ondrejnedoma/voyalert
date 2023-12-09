@@ -72,7 +72,7 @@ export default function AddScreen({navigation}) {
     });
   };
   const handleLongPressDataSource = dataSource => {
-    const content = dataSourceInfo.find(el => (el.value = dataSource));
+    const content = dataSourceInfo.find(el => el.value === dataSource);
     setDataSourceDialogContent(content);
     setDataSourceDialogVisible(true);
   };

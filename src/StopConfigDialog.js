@@ -2,7 +2,6 @@ import {View} from 'react-native';
 import {Button, Checkbox, Dialog, Portal} from 'react-native-paper';
 import React from 'react';
 import apiSetConfigForStop from './scripts/ApiSetConfigForStop';
-import DocumentPicker from 'react-native-document-picker';
 
 export default function StopConfigDialog({
   visible,
@@ -40,13 +39,6 @@ export default function StopConfigDialog({
       }
     });
   };
-  const handlePickSound = async () => {
-    const result = await DocumentPicker.pickSingle({
-      type: 'audio/*',
-      copyTo: 'documentDirectory',
-    });
-    console.log(result);
-  };
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={onDismiss}>
@@ -62,21 +54,17 @@ export default function StopConfigDialog({
               loading || !options.isArrivalEnabled || stopConfig.alarmArrival
             }
           />
-          <View style={{marginHorizontal: 16}}>
-            <Checkbox.Item
-              label="Alarm at arrival"
-              status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
-              onPress={() =>
-                onConfigSet('alarmArrival', !stopConfig.alarmArrival)
-              }
-              disabled={
-                loading ||
-                !options.isArrivalEnabled ||
-                !stopConfig.notifyArrival
-              }
-            />
-            <Button onPress={handlePickSound}>Select sound</Button>
-          </View>
+          <Checkbox.Item
+            labelStyle={{paddingHorizontal: 16}}
+            label="Alarm at arrival"
+            status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
+            onPress={() =>
+              onConfigSet('alarmArrival', !stopConfig.alarmArrival)
+            }
+            disabled={
+              loading || !options.isArrivalEnabled || !stopConfig.notifyArrival
+            }
+          />
           <Checkbox.Item
             label="Notification at departure"
             status={stopConfig.notifyDeparture ? 'checked' : 'unchecked'}
@@ -89,21 +77,19 @@ export default function StopConfigDialog({
               stopConfig.alarmDeparture
             }
           />
-          <View style={{marginHorizontal: 16}}>
-            <Checkbox.Item
-              label="Alarm at departure"
-              status={stopConfig.alarmDeparture ? 'checked' : 'unchecked'}
-              onPress={() =>
-                onConfigSet('alarmDeparture', !stopConfig.alarmDeparture)
-              }
-              disabled={
-                loading ||
-                !options.isDepartureEnabled ||
-                !stopConfig.notifyDeparture
-              }
-            />
-            <Button>Select sound</Button>
-          </View>
+          <Checkbox.Item
+            labelStyle={{paddingHorizontal: 16}}
+            label="Alarm at departure"
+            status={stopConfig.alarmDeparture ? 'checked' : 'unchecked'}
+            onPress={() =>
+              onConfigSet('alarmDeparture', !stopConfig.alarmDeparture)
+            }
+            disabled={
+              loading ||
+              !options.isDepartureEnabled ||
+              !stopConfig.notifyDeparture
+            }
+          />
         </Dialog.Content>
       </Dialog>
     </Portal>

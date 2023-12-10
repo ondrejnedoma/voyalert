@@ -55,5 +55,10 @@
   },
   "engines": {
     "node": ">=16"
+  },
+  "expo": {
+    "autolinking": {
+      "exclude": ["expo-application", "expo-asset", "expo-constants", "expo-file-system", "expo-font", "expo-dev-client", "expo-keep-awake"]
+    }
   }
 }

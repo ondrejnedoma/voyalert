@@ -4,6 +4,8 @@ import SourceLogo from '../SourceLogo';
 import apiDelete from '../scripts/ApiDelete';
 import React from 'react';
 
+import notifee from '@notifee/react-native';
+
 export default function ConfigScreen({route, navigation}) {
   const {dataSource, voyNumber} = route.params;
   const [loading, setLoading] = React.useState(false);
@@ -14,6 +16,8 @@ export default function ConfigScreen({route, navigation}) {
     apiDelete({dataSource, voyNumber}).then(data => {
       setLoading(false);
       if (data.ok) {
+        notifee.deleteChannel(`${dataSource}${voyNumber} notification`);
+        notifee.deleteChannel(`${dataSource}${voyNumber} alarm`);
         navigation.goBack();
       } else {
         setErrorSnackbarText(data.error);

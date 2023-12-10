@@ -2,8 +2,11 @@ import messaging from '@react-native-firebase/messaging';
 import notifee, {
   AndroidImportance,
   AndroidCategory,
+  EventType,
 } from '@notifee/react-native';
 import {Appearance} from 'react-native';
+import uuid from 'react-native-uuid';
+import {parse} from 'date-fns';
 
 messaging().registerDeviceForRemoteMessages();
 
@@ -14,58 +17,89 @@ const notificationIcons = {
   },
 };
 
+export let lastAlarmNotificationData = {};
+
 async function onMessageReceived(message) {
-  console.log(message.data.notificationType);
+  const notificationType = message.data.notificationType;
+  const isAlarm = notificationType === 'alarm';
   const darkScheme = Appearance.getColorScheme() === 'dark';
-  const channelId = await notifee.createChannel({
-    id: 'voyalert',
-    name: 'VoyAlert',
-    importance: AndroidImportance.HIGH,
-  });
-  await notifee.displayNotification({
-    title: message.data.voyNumber,
-    body:
-      (message.data.type === 'arrival' ? 'Arrived at ' : 'Departed ') +
-      `${message.data.stop} at ${message.data.time}`,
-    android: {
-      channelId,
-      category:
-        message.data.notificationType === 'alarm'
-          ? AndroidCategory.CALL
-          : undefined,
+  const id = uuid.v4();
+  const notificationChannel =
+    message.data.dataSource + message.data.voyNumber + ' ' + notificationType;
+  const title = message.data.voyNumber + ' ' + message.data.type;
+  const body = message.data.stop + ', ' + message.data.time;
+  const icon = darkScheme
+    ? notificationIcons[message.data.dataSource].dark
+    : notificationIcons[message.data.dataSource].light;
+  const parsedDate = parse(message.data.time, 'HH:mm', Date.now());
+  if (isAlarm) {
+    const channelId = await notifee.createChannel({
+      id: notificationChannel,
+      name: notificationChannel,
+      vibrationPattern: Array(100).fill(2000),
+      sound: 'voyalert_alarm',
       importance: AndroidImportance.HIGH,
-      //   smallIcon: 'check', // optional, defaults to 'ic_launcher'.
-      // pressAction is needed if you want the notification to open the app when pressed
-      // pressAction: {
-      //   id: 'default',
-      // },
-      largeIcon: darkScheme
-        ? notificationIcons[message.data.dataSource].dark
-        : notificationIcons[message.data.dataSource].light,
-      fullScreenAction:
-        message.data.notificationType === 'alarm'
-          ? {
-              id: 'default',
-            }
-          : undefined,
-      actions: [
-        {
-          title: 'Decline',
-          pressAction: {
-            id: 'decline-call',
-          },
+    });
+    await notifee.displayNotification({
+      id,
+      title,
+      body: body,
+      subtitle: notificationType,
+      timestamp: parsedDate.getTime(),
+      showTimestamp: true,
+      android: {
+        channelId,
+        category: AndroidCategory.ALARM,
+        largeIcon: icon,
+        pressAction: {
+          id: 'dismiss',
         },
-        {
-          title: 'Answer',
-          pressAction: {
-            id: 'answer-call',
-          },
+        fullScreenAction: {
+          id: 'default',
+          launchActivity: 'me.ondrejnedoma.voyalert.AlarmActivity',
         },
-      ],
-      lightUpScreen: true,
-    },
-  });
+        lightUpScreen: true,
+        loopSound: true,
+        ongoing: true,
+      },
+    });
+    lastAlarmNotificationData = {
+      id,
+      dataSource: message.data.dataSource,
+      title,
+      stop: message.data.stop,
+      time: message.data.time,
+    };
+  } else {
+    const channelId = await notifee.createChannel({
+      id: notificationChannel,
+      name: notificationChannel,
+      sound: 'voyalert_notification',
+      importance: AndroidImportance.HIGH,
+    });
+    await notifee.displayNotification({
+      title,
+      body,
+      subtitle: notificationType,
+      android: {
+        channelId,
+        category: AndroidCategory.MESSAGE,
+        largeIcon: icon,
+        pressAction: {
+          id: 'dismiss',
+        },
+        timestamp: parsedDate.getTime(),
+        showTimestamp: true,
+      },
+    });
+  }
 }
 
 messaging().onMessage(onMessageReceived);
 messaging().setBackgroundMessageHandler(onMessageReceived);
+
+notifee.onBackgroundEvent(async ({type, detail}) => {
+  if (type === EventType.PRESS && detail.pressAction.id === 'dismiss') {
+    notifee.cancelNotification(detail.notification.id);
+  }
+});

@@ -21,5 +21,12 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+      <activity
+        android:name=".AlarmActivity"
+        android:showWhenLocked="true"
+        android:turnScreenOn="true"
+        android:launchMode="singleTop"
+        android:showOnLockScreen="true"
+      />
     </application>
 </manifest>

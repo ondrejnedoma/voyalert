@@ -41,6 +41,7 @@ function App() {
     themeToApply.colors.background,
     colorScheme !== 'dark',
   );
+
   return (
     <PaperProvider theme={themeToApply}>
       <NavigationContainer theme={themeToApply}>

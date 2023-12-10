@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import {Button, Checkbox, Dialog, Portal, Text} from 'react-native-paper';
+import {Button, Checkbox, Dialog, Portal} from 'react-native-paper';
 import React from 'react';
 import apiSetConfigForStop from './scripts/ApiSetConfigForStop';
 import DocumentPicker from 'react-native-document-picker';

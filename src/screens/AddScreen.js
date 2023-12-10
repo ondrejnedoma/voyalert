@@ -4,10 +4,7 @@ import {
   TextInput,
   Button,
   RadioButton,
-  Dialog,
-  Portal,
   Snackbar,
-  Icon,
   useTheme,
 } from 'react-native-paper';
 import apiAdd from '../scripts/ApiAdd';

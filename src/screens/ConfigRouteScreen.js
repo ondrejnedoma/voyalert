@@ -2,9 +2,7 @@ import {View, ScrollView, SafeAreaView} from 'react-native';
 import {
   Text,
   ActivityIndicator,
-  Checkbox,
   Snackbar,
-  List,
   TouchableRipple,
   Icon,
   useTheme,

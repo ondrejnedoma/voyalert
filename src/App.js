@@ -1,27 +1,30 @@
-import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
 import React from 'react';
-import {PermissionsAndroid, useColorScheme, StatusBar} from 'react-native';
+import {PermissionsAndroid, StatusBar, useColorScheme} from 'react-native';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {
   MD3DarkTheme,
   MD3LightTheme,
   PaperProvider,
   adaptNavigationTheme,
 } from 'react-native-paper';
+
+import merge from 'deepmerge';
+
+import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
 import {
   NavigationContainer,
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import merge from 'deepmerge';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import HomeScreen from './screens/HomeScreen';
 import AddScreen from './screens/AddScreen';
-import ConfigScreen from './screens/ConfigScreen';
 import ConfigRouteScreen from './screens/ConfigRouteScreen';
+import ConfigScreen from './screens/ConfigScreen';
+import DonateScreen from './screens/DonateScreen';
+import HomeScreen from './screens/HomeScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function App() {
   PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
@@ -51,11 +54,30 @@ function App() {
         />
         <Stack.Navigator
           initialRouteName="Home"
-          screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Add" component={AddScreen} />
-          <Stack.Screen name="Config" component={ConfigScreen} />
-          <Stack.Screen name="ConfigRoute" component={ConfigRouteScreen} />
+          screenOptions={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+          />
+          <Stack.Screen
+            name="Donate"
+            component={DonateScreen}
+          />
+          <Stack.Screen
+            name="Add"
+            component={AddScreen}
+          />
+          <Stack.Screen
+            name="Config"
+            component={ConfigScreen}
+          />
+          <Stack.Screen
+            name="ConfigRoute"
+            component={ConfigRouteScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

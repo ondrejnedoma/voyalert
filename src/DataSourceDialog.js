@@ -1,15 +1,19 @@
-import {View} from 'react-native';
-import {Text, Icon, Dialog, Portal, useTheme} from 'react-native-paper';
 import React from 'react';
+import {View} from 'react-native';
+import {Dialog, Icon, Portal, Text, useTheme} from 'react-native-paper';
 
 export default function DataSourceDialog({visible, setVisible, content}) {
   const theme = useTheme();
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={() => setVisible(false)}>
+      <Dialog
+        visible={visible}
+        onDismiss={() => setVisible(false)}>
         <Dialog.Title>{content.name}</Dialog.Title>
         <Dialog.Content>
-          <Text style={{marginBottom: 12}} variant="bodyMedium">
+          <Text
+            style={{marginBottom: 12}}
+            variant="bodyMedium">
             {content.use}
           </Text>
           <View style={{gap: 4}}>
@@ -38,7 +42,9 @@ export default function DataSourceDialog({visible, setVisible, content}) {
               </View>
             ))}
           </View>
-          <Text style={{marginTop: 18}} variant="bodyMedium">
+          <Text
+            style={{marginTop: 18}}
+            variant="bodyMedium">
             {content.hint}
           </Text>
         </Dialog.Content>

@@ -1,7 +1,8 @@
-import {View} from 'react-native';
-import {TouchableRipple, Text} from 'react-native-paper';
-import SourceLogo from './SourceLogo';
 import React from 'react';
+import {View} from 'react-native';
+import {Text, TouchableRipple} from 'react-native-paper';
+
+import SourceLogo from './SourceLogo';
 
 export default function OneVoy({dataSource, voyNumber, onPress}) {
   return (
@@ -13,8 +14,13 @@ export default function OneVoy({dataSource, voyNumber, onPress}) {
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <SourceLogo dataSource={dataSource} size={24} />
-        <Text style={{marginHorizontal: 8}} variant="titleLarge">
+        <SourceLogo
+          dataSource={dataSource}
+          size={24}
+        />
+        <Text
+          style={{marginHorizontal: 8}}
+          variant="titleLarge">
           {voyNumber}
         </Text>
       </View>

@@ -1,18 +1,22 @@
-import {View, SafeAreaView, StyleSheet} from 'react-native';
-import {
-  FAB,
-  Text,
-  IconButton,
-  ActivityIndicator,
-  Snackbar,
-  Menu,
-} from 'react-native-paper';
-import {useFocusEffect} from '@react-navigation/native';
-import apiList from '../scripts/ApiList';
 import React from 'react';
-import OneVoy from '../OneVoy';
+import {Linking, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FAB,
+  IconButton,
+  Menu,
+  Snackbar,
+  Text,
+} from 'react-native-paper';
 
-export default function HomeScreen({route, navigation}) {
+import {useFocusEffect} from '@react-navigation/native';
+
+import HomeScreenMenu from '../HomeScreenMenu';
+import OneVoy from '../OneVoy';
+import ScreenTitle from '../ScreenTitle';
+import apiList from '../scripts/ApiList';
+
+export default function HomeScreen({navigation}) {
   const [voyList, setVoyList] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
@@ -29,6 +33,17 @@ export default function HomeScreen({route, navigation}) {
         setShowErrorSnackbar(true);
       }
     });
+  };
+  const handleItemPress = item => {
+    setMenuVisible(false);
+    switch (item) {
+      case 'donate':
+        navigation.navigate('Donate');
+        break;
+      case 'bug':
+        Linking.openURL('https://github.com/ondrejnedoma/voyalert/issues/new');
+        break;
+    }
   };
   useFocusEffect(
     React.useCallback(() => {
@@ -47,32 +62,13 @@ export default function HomeScreen({route, navigation}) {
           onPress={handleList}
           disabled={loading}
         />
-        <Menu
-          style={{marginTop: 8}}
+        <HomeScreenMenu
           visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <IconButton
-              icon="dots-vertical"
-              size={24}
-              onPress={() => setMenuVisible(true)}
-            />
-          }>
-          <Menu.Item title="Settings" />
-          <Menu.Item title="Donate please 🥺" />
-        </Menu>
+          setVisible={setMenuVisible}
+          handleItemPress={handleItemPress}
+        />
       </View>
-      <View
-        style={{
-          marginTop: 32,
-          marginBottom: 42,
-          marginHorizontal: 24,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Text variant="displaySmall">VoyAlert</Text>
-        {loading ? <ActivityIndicator style={{marginHorizontal: 16}} /> : null}
-      </View>
+      <ScreenTitle smallMarginTop={true}>VoyAlert</ScreenTitle>
       {voyList.map(voy => (
         <OneVoy
           key={voy.dataSource + voy.voyNumber}

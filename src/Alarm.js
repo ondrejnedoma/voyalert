@@ -1,19 +1,21 @@
-import {View, useColorScheme, StatusBar, BackHandler} from 'react-native';
-import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
+import React from 'react';
+import {BackHandler, StatusBar, View, useColorScheme} from 'react-native';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {
-  Text,
   Button,
   MD3DarkTheme,
   MD3LightTheme,
   PaperProvider,
+  Text,
 } from 'react-native-paper';
-import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import React from 'react';
+
+import {differenceInSeconds, format, parse} from 'date-fns';
 
 import notifee from '@notifee/react-native';
-import {lastAlarmNotificationData} from './scripts/NotificationHandler';
+import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
+
 import SourceLogo from './SourceLogo';
-import {format, parse, differenceInSeconds} from 'date-fns';
+import {lastAlarmNotificationData} from './scripts/NotificationHandler';
 
 export default function Alarm() {
   const colorScheme = useColorScheme();
@@ -68,25 +70,27 @@ export default function Alarm() {
         ) : null}
         {lastAlarmNotificationData.title ? (
           <Text
-            style={{marginTop: 24, marginHorizontal: 30, textAlign: 'center'}}
+            style={{marginTop: 24, marginHorizontal: 24, textAlign: 'center'}}
             variant="displayMedium">
             {lastAlarmNotificationData.title}
           </Text>
         ) : null}
         {lastAlarmNotificationData.stop && lastAlarmNotificationData.time ? (
           <Text
-            style={{marginTop: 24, marginHorizontal: 30, textAlign: 'center'}}
+            style={{marginTop: 24, marginHorizontal: 24, textAlign: 'center'}}
             variant="displaySmall">
             {lastAlarmNotificationData.stop +
               ', ' +
               lastAlarmNotificationData.time}
           </Text>
         ) : null}
-        <Text style={{marginTop: 60, marginBottom: 24}} variant="displayLarge">
+        <Text
+          style={{marginTop: 60, marginBottom: 24}}
+          variant="displayLarge">
           -{timePassed.toString()}
         </Text>
         <Button
-          style={{marginHorizontal: 30}}
+          style={{marginHorizontal: 24}}
           onPress={dismiss}
           mode="contained">
           Dismiss

@@ -1,5 +1,6 @@
-import apiURLProvider from './ApiURLProvider';
 import messaging from '@react-native-firebase/messaging';
+
+import apiURLProvider from './ApiURLProvider';
 
 export default async function apiDelete({dataSource, voyNumber}) {
   const baseUrl = apiURLProvider();

@@ -1,12 +1,14 @@
-import messaging from '@react-native-firebase/messaging';
-import notifee, {
-  AndroidImportance,
-  AndroidCategory,
-  EventType,
-} from '@notifee/react-native';
 import {Appearance} from 'react-native';
 import uuid from 'react-native-uuid';
+
 import {parse} from 'date-fns';
+
+import notifee, {
+  AndroidCategory,
+  AndroidImportance,
+  EventType,
+} from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 
 messaging().registerDeviceForRemoteMessages();
 

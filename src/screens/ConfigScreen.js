@@ -1,10 +1,12 @@
-import {View, SafeAreaView} from 'react-native';
-import {Text, IconButton, Snackbar, Button} from 'react-native-paper';
-import SourceLogo from '../SourceLogo';
-import apiDelete from '../scripts/ApiDelete';
 import React from 'react';
+import {SafeAreaView, View} from 'react-native';
+import {Button, IconButton, Snackbar, Text} from 'react-native-paper';
 
 import notifee from '@notifee/react-native';
+
+import ScreenTitle from '../ScreenTitle';
+import SourceLogo from '../SourceLogo';
+import apiDelete from '../scripts/ApiDelete';
 
 export default function ConfigScreen({route, navigation}) {
   const {dataSource, voyNumber} = route.params;
@@ -35,17 +37,14 @@ export default function ConfigScreen({route, navigation}) {
           disabled={loading}
         />
       </View>
+      <ScreenTitle
+        smallMarginTop={true}
+        withDataSouceIcon={true}
+        dataSource={dataSource}>
+        {voyNumber}
+      </ScreenTitle>
       <View style={{marginHorizontal: 24}}>
-        <View
-          style={{marginTop: 32, flexDirection: 'row', alignItems: 'center'}}>
-          <SourceLogo dataSource={dataSource} size={36} />
-          <Text style={{marginHorizontal: 12}} variant="displaySmall">
-            {voyNumber}
-          </Text>
-        </View>
-        <Text style={{marginTop: 42}} variant="titleMedium">
-          Stops to alert at:
-        </Text>
+        <Text variant="titleMedium">Stops to alert at:</Text>
         <Button
           style={{alignSelf: 'flex-start', marginTop: 8}}
           icon="timeline-alert"

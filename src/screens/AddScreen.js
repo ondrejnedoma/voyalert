@@ -1,18 +1,19 @@
-import {View, SafeAreaView, TouchableWithoutFeedback} from 'react-native';
+import React from 'react';
+import {SafeAreaView, View} from 'react-native';
 import {
-  Text,
-  TextInput,
   Button,
   RadioButton,
   Snackbar,
+  Text,
+  TextInput,
   useTheme,
 } from 'react-native-paper';
-import apiAdd from '../scripts/ApiAdd';
-import React from 'react';
+
 import DataSourceDialog from '../DataSourceDialog';
+import ScreenTitle from '../ScreenTitle';
+import apiAdd from '../scripts/ApiAdd';
 
 export default function AddScreen({navigation}) {
-  const theme = useTheme();
   const [dataSource, setDataSource] = React.useState('');
   const [voyNumber, setVoyNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -26,25 +27,19 @@ export default function AddScreen({navigation}) {
       pros: ['Works with every carrier (ČD, RJ, LE, Arriva...)'],
       cons: [
         'Alerts only at railway stations with dispatchers',
-        'Alerts can be around 2 minutes delayed',
+        'Alerts will be around 2-3 minutes delayed',
       ],
       hint: 'Enter the train number without the train type - 11085',
       disabled: false,
     },
     {
-      value: 'cd',
-      name: 'České Dráhy (soon)',
-      use: 'This data source is applicable for all ČD trains - cd.cz',
-      pros: ['Alerts at every stop'],
-      cons: ['Only works with ČD trains'],
-      disabled: true,
-    },
-    {
       value: 'idsok',
       name: 'IDSOK (CestujOK)',
       use: 'This data source is applicable for all vehicles in the IDSOK system - cestujok.cz',
-      pros: ['Based on real-time vehicle position - precise data'],
-      cons: ["Can't be set to alert about the arrival to the final stop"],
+      pros: [
+        'Based on real-time vehicle position - alerts should arrive on time',
+      ],
+      cons: ["Can't be set to alert about arrivals"],
       hint: 'Enter the number exactly as it appears on CestujOK, without letters - 890302 39, 14018',
       disabled: false,
     },
@@ -77,15 +72,18 @@ export default function AddScreen({navigation}) {
   };
   return (
     <SafeAreaView style={{flex: 1}}>
+      <ScreenTitle>Add Voy</ScreenTitle>
       <View style={{marginHorizontal: 24}}>
-        <Text style={{marginTop: 84}} variant="displaySmall">
-          Add Voy...
-        </Text>
-        <Text style={{marginTop: 42, marginBottom: 4}} variant="titleMedium">
+        <Text
+          style={{marginBottom: 4}}
+          variant="titleMedium">
           Data source:
         </Text>
-        <Text style={{marginBottom: 8}} variant="bodySmall">
-          Long press on data sources for details
+        <Text
+          style={{marginBottom: 8}}
+          variant="bodySmall">
+          Long press on individual data sources for details. More data sources
+          coming soon.
         </Text>
       </View>
       <RadioButton.Group
@@ -94,7 +92,7 @@ export default function AddScreen({navigation}) {
         {dataSourceInfo.map(el => (
           <RadioButton.Item
             key={el.value}
-            style={{paddingHorizontal: 30}}
+            style={{paddingHorizontal: 24}}
             position="leading"
             labelVariant="bodyMedium"
             label={el.name}
@@ -110,26 +108,23 @@ export default function AddScreen({navigation}) {
         content={dataSourceDialogContent}
       />
       <View style={{marginHorizontal: 24}}>
-        {dataSource ? (
-          <>
-            <TextInput
-              style={{marginTop: 16}}
-              mode="outlined"
-              label="Number"
-              value={voyNumber}
-              onChangeText={text => setVoyNumber(text)}
-            />
-            <Button
-              style={{alignSelf: 'flex-start', marginTop: 8}}
-              icon="check"
-              mode="contained"
-              disabled={loading}
-              loading={loading}
-              onPress={handleAdd}>
-              Finish
-            </Button>
-          </>
-        ) : null}
+        <TextInput
+          style={{marginTop: 16}}
+          mode="contained"
+          disabled={loading || !dataSource}
+          label="Number"
+          value={voyNumber}
+          onChangeText={text => setVoyNumber(text)}
+        />
+        <Button
+          style={{alignSelf: 'flex-start', marginTop: 8}}
+          icon="check"
+          mode="contained"
+          disabled={loading || !dataSource}
+          loading={loading}
+          onPress={handleAdd}>
+          Finish
+        </Button>
       </View>
       <Snackbar
         visible={showErrorSnackbar}

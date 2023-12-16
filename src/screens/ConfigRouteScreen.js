@@ -1,19 +1,16 @@
-import {View, ScrollView, SafeAreaView} from 'react-native';
-import {
-  Text,
-  ActivityIndicator,
-  Snackbar,
-  TouchableRipple,
-  Icon,
-  useTheme,
-} from 'react-native-paper';
-import {useFocusEffect} from '@react-navigation/native';
-import apiRoute from '../scripts/ApiRoute';
-import apiGetConfig from '../scripts/ApiGetConfig';
-import React, {useEffect} from 'react';
-import StopConfigDialog from '../StopConfigDialog';
+import React from 'react';
+import {SafeAreaView, ScrollView, View} from 'react-native';
+import {ActivityIndicator, Snackbar, Text} from 'react-native-paper';
 
-export default function ConfigRouteScreen({route, navigation}) {
+import {useFocusEffect} from '@react-navigation/native';
+
+import OneRouteStop from '../OneRouteStop';
+import ScreenTitle from '../ScreenTitle';
+import StopConfigDialog from '../StopConfigDialog';
+import apiGetConfig from '../scripts/ApiGetConfig';
+import apiRoute from '../scripts/ApiRoute';
+
+export default function ConfigRouteScreen({route}) {
   const {dataSource, voyNumber} = route.params;
   const [stops, setStops] = React.useState();
   const [config, setConfig] = React.useState();
@@ -34,7 +31,6 @@ export default function ConfigRouteScreen({route, navigation}) {
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
-  const theme = useTheme();
   const handleRoute = async () => {
     const data = await apiRoute({dataSource, voyNumber});
     if (data.ok) {
@@ -115,40 +111,21 @@ export default function ConfigRouteScreen({route, navigation}) {
   };
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View
-        style={{
-          marginTop: 84,
-          marginBottom: 32,
-          marginHorizontal: 24,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Text variant="displaySmall">Select stops</Text>
-        {loading ? <ActivityIndicator style={{marginHorizontal: 16}} /> : null}
-      </View>
+      <ScreenTitle
+        withLoading={true}
+        loading={loading}>
+        Configure stops
+      </ScreenTitle>
       <ScrollView>
         {stops && config
           ? stops.map(stop => (
-              <TouchableRipple
+              <OneRouteStop
                 key={stop}
-                style={{paddingHorizontal: 30, paddingVertical: 16}}
-                onPress={() => handleOnStopClick(stop)}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <Text variant="bodyMedium">{stop}</Text>
-                  {isSomeAlertEnabled(stop) ? (
-                    <Icon
-                      source="bell"
-                      size={18}
-                      color={theme.colors.primary}
-                    />
-                  ) : null}
-                </View>
-              </TouchableRipple>
+                stop={stop}
+                handleOnStopClick={handleOnStopClick}
+                isSomeAlertEnabled={isSomeAlertEnabled}
+                loading={loading}
+              />
             ))
           : null}
       </ScrollView>

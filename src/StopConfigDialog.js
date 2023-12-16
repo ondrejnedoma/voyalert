@@ -1,6 +1,7 @@
+import React from 'react';
 import {View} from 'react-native';
 import {Button, Checkbox, Dialog, Portal} from 'react-native-paper';
-import React from 'react';
+
 import apiSetConfigForStop from './scripts/ApiSetConfigForStop';
 
 export default function StopConfigDialog({
@@ -41,7 +42,9 @@ export default function StopConfigDialog({
   };
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={onDismiss}>
+      <Dialog
+        visible={visible}
+        onDismiss={onDismiss}>
         <Dialog.Title>{stopName}</Dialog.Title>
         <Dialog.Content>
           <Checkbox.Item

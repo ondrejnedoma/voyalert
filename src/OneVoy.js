@@ -17,7 +17,7 @@ export default function OneVoy({dataSource, voyNumber, onPress}) {
         }}>
         <SourceLogo
           dataSource={dataSource}
-          size={32}
+          size={28}
         />
         <Text variant="titleLarge">{voyNumber}</Text>
       </View>

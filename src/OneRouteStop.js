@@ -11,17 +11,18 @@ export default function OneRouteStop({
   const theme = useTheme();
   return (
     <TouchableRipple
-      style={{paddingHorizontal: 24, paddingVertical: 16}}
       onPress={() => handleOnStopClick(stop)}
       disabled={loading}>
       <View
         style={{
+          marginHorizontal: 24,
+          marginVertical: 12,
           flexDirection: 'row',
-          justifyContent: 'space-between',
           alignItems: 'center',
+          justifyContent: 'space-between',
         }}>
         <Text
-          variant="bodyMedium"
+          variant="bodyLarge"
           style={{
             color: loading
               ? theme.colors.onSurfaceDisabled
@@ -32,7 +33,7 @@ export default function OneRouteStop({
         {isSomeAlertEnabled(stop) ? (
           <Icon
             source="bell"
-            size={18}
+            size={20}
             color={theme.colors.primary}
           />
         ) : null}

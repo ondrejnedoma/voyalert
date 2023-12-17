@@ -29,7 +29,7 @@ export default function OneDonationItem({icon, address, note}) {
         <Icon
           source={icon}
           color={theme.colors.primary}
-          size={32}
+          size={28}
         />
         <View>
           <Text

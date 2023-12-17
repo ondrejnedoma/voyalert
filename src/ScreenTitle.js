@@ -25,7 +25,7 @@ export default function ScreenTitle({
         }}>
         <SourceLogo
           dataSource={dataSource}
-          size={36}
+          size={42}
         />
         <Text
           style={{marginLeft: 12}}
@@ -61,7 +61,7 @@ export default function ScreenTitle({
         }}>
         <SourceLogo
           dataSource={dataSource}
-          size={36}
+          size={42}
         />
         <Text
           style={{marginLeft: 12}}

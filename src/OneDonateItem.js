@@ -4,7 +4,7 @@ import {Icon, Text, TouchableRipple, useTheme} from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 
-export default function OneDonationItem({icon, address, note}) {
+export default function OneDonateItem({icon, address, note}) {
   const theme = useTheme();
   const shortenAddress = address => {
     const targetLength = 30;

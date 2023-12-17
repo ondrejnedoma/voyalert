@@ -12,11 +12,11 @@ export default function DataSourceDialog({visible, setVisible, content}) {
         <Dialog.Title>{content.name}</Dialog.Title>
         <Dialog.Content>
           <Text
-            style={{marginBottom: 12}}
+            style={{marginBottom: 16}}
             variant="bodyMedium">
             {content.use}
           </Text>
-          <View style={{gap: 4}}>
+          <View style={{gap: 8, marginBottom: 16}}>
             {content.pros.map(el => (
               <View
                 key={el}
@@ -26,7 +26,11 @@ export default function DataSourceDialog({visible, setVisible, content}) {
                   color={theme.colors.primary}
                   size={20}
                 />
-                <Text style={{paddingHorizontal: 8}}>{el}</Text>
+                <Text
+                  style={{paddingHorizontal: 8}}
+                  variant="bodyMedium">
+                  {el}
+                </Text>
               </View>
             ))}
             {content.cons.map(el => (
@@ -38,15 +42,15 @@ export default function DataSourceDialog({visible, setVisible, content}) {
                   color={theme.colors.primary}
                   size={20}
                 />
-                <Text style={{paddingHorizontal: 8}}>{el}</Text>
+                <Text
+                  style={{paddingHorizontal: 8}}
+                  variant="bodyMedium">
+                  {el}
+                </Text>
               </View>
             ))}
           </View>
-          <Text
-            style={{marginTop: 18}}
-            variant="bodyMedium">
-            {content.hint}
-          </Text>
+          <Text variant="bodySmall">{content.hint}</Text>
         </Dialog.Content>
       </Dialog>
     </Portal>

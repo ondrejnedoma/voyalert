@@ -4,14 +4,14 @@ import {Icon, Text, TouchableRipple, useTheme} from 'react-native-paper';
 
 export default function OneRouteStop({
   stop,
-  handleOnStopClick,
+  onPress,
   isSomeAlertEnabled,
   loading,
 }) {
   const theme = useTheme();
   return (
     <TouchableRipple
-      onPress={() => handleOnStopClick(stop)}
+      onPress={() => onPress(stop)}
       disabled={loading}>
       <View
         style={{

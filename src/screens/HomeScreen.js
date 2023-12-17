@@ -50,9 +50,6 @@ export default function HomeScreen({navigation}) {
       handleList();
     }, []),
   );
-  const handleOneVoyClick = ({dataSource, voyNumber}) => {
-    navigation.navigate('Config', {dataSource, voyNumber});
-  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
@@ -69,12 +66,11 @@ export default function HomeScreen({navigation}) {
         />
       </View>
       <ScreenTitle smallMarginTop={true}>VoyAlert</ScreenTitle>
-      {voyList.map(voy => (
+      {voyList.map(el => (
         <OneVoy
-          key={voy.dataSource + voy.voyNumber}
-          dataSource={voy.dataSource}
-          voyNumber={voy.voyNumber}
-          onPress={handleOneVoyClick}
+          key={el.dataSource + el.voyNumber}
+          dataSource={el.dataSource}
+          voyNumber={el.voyNumber}
         />
       ))}
       <FAB

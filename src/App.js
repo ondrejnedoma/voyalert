@@ -21,8 +21,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddScreen from './screens/AddScreen';
 import ConfigRouteScreen from './screens/ConfigRouteScreen';
 import ConfigScreen from './screens/ConfigScreen';
+import CreditsScreen from './screens/CreditsScreen';
 import DonateScreen from './screens/DonateScreen';
 import HomeScreen from './screens/HomeScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -63,8 +65,16 @@ function App() {
             component={HomeScreen}
           />
           <Stack.Screen
+            name="Settings"
+            component={SettingsScreen}
+          />
+          <Stack.Screen
             name="Donate"
             component={DonateScreen}
+          />
+          <Stack.Screen
+            name="Credits"
+            component={CreditsScreen}
           />
           <Stack.Screen
             name="Add"

@@ -40,7 +40,9 @@ export default function ConfigScreen({route, navigation}) {
       <ScreenTitle
         smallMarginTop={true}
         withDataSouceIcon={true}
-        dataSource={dataSource}>
+        dataSource={dataSource}
+        withLoading={true}
+        loading={loading}>
         {voyNumber}
       </ScreenTitle>
       <View style={{marginHorizontal: 24}}>

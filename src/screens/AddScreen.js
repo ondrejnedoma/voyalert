@@ -72,7 +72,11 @@ export default function AddScreen({navigation}) {
   };
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle>Add Voy</ScreenTitle>
+      <ScreenTitle
+        withLoading={true}
+        loading={loading}>
+        Add Voy
+      </ScreenTitle>
       <View style={{marginHorizontal: 24}}>
         <Text
           style={{marginBottom: 4}}
@@ -80,7 +84,7 @@ export default function AddScreen({navigation}) {
           Data source:
         </Text>
         <Text
-          style={{marginBottom: 8}}
+          style={{marginBottom: 4}}
           variant="bodySmall">
           Long press on individual data sources for details. More data sources
           coming soon.
@@ -94,7 +98,7 @@ export default function AddScreen({navigation}) {
             key={el.value}
             style={{paddingHorizontal: 24}}
             position="leading"
-            labelVariant="bodyMedium"
+            labelVariant="bodyLarge"
             label={el.name}
             value={el.value}
             disabled={el.disabled}
@@ -109,19 +113,23 @@ export default function AddScreen({navigation}) {
       />
       <View style={{marginHorizontal: 24}}>
         <TextInput
-          style={{marginTop: 16}}
-          mode="contained"
+          style={{marginVertical: 16}}
+          mode="outlined"
           disabled={loading || !dataSource}
           label="Number"
           value={voyNumber}
           onChangeText={text => setVoyNumber(text)}
         />
+        <Text
+          style={{marginBottom: 16}}
+          variant="bodySmall">
+          After adding the voy, press it from the home screen to configure it.
+        </Text>
         <Button
-          style={{alignSelf: 'flex-start', marginTop: 8}}
+          style={{alignSelf: 'flex-end'}}
           icon="check"
           mode="contained"
           disabled={loading || !dataSource}
-          loading={loading}
           onPress={handleAdd}>
           Finish
         </Button>

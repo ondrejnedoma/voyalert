@@ -58,7 +58,7 @@ export default function StopConfigDialog({
             }
           />
           <Checkbox.Item
-            labelStyle={{paddingHorizontal: 16}}
+            labelStyle={{paddingHorizontal: 24}}
             label="Alarm at arrival"
             status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
             onPress={() =>
@@ -81,7 +81,7 @@ export default function StopConfigDialog({
             }
           />
           <Checkbox.Item
-            labelStyle={{paddingHorizontal: 16}}
+            labelStyle={{paddingHorizontal: 24}}
             label="Alarm at departure"
             status={stopConfig.alarmDeparture ? 'checked' : 'unchecked'}
             onPress={() =>

@@ -49,7 +49,7 @@ export default function ConfigRouteScreen({route}) {
       setShowErrorSnackbar(true);
     }
   };
-  const handleOnStopClick = stopName => {
+  const handleOnStopPress = stopName => {
     if (config.stops && config.stops.some(stop => stop.name === stopName)) {
       const stopConfig = config.stops.find(stop => stop.name === stopName);
       setStopConfigDialogConfig(stopConfig);
@@ -122,7 +122,7 @@ export default function ConfigRouteScreen({route}) {
               <OneRouteStop
                 key={stop}
                 stop={stop}
-                handleOnStopClick={handleOnStopClick}
+                onPress={handleOnStopPress}
                 isSomeAlertEnabled={isSomeAlertEnabled}
                 loading={loading}
               />

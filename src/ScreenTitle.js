@@ -11,28 +11,29 @@ export default function ScreenTitle({
   loading,
   withDataSouceIcon,
   dataSource,
+  dialog,
 }) {
-  const marginTop = smallMarginTop ? 32 : 84;
+  const marginTop = dialog ? 0 : smallMarginTop ? 32 : 84;
+  const marginBottom = dialog ? 0 : 42;
+  const marginHorizontal = dialog ? 0 : 24;
+  const variant = dialog ? 'headlineLarge' : 'displaySmall';
   if (withLoading && withDataSouceIcon) {
     return (
       <View
         style={{
           marginTop,
-          marginBottom: 42,
-          marginHorizontal: 24,
+          marginBottom,
+          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
+          gap: 16,
         }}>
         <SourceLogo
           dataSource={dataSource}
           size={42}
         />
-        <Text
-          style={{marginLeft: 12}}
-          variant="displaySmall">
-          {children}
-        </Text>
-        {loading ? <ActivityIndicator style={{marginLeft: 16}} /> : null}
+        <Text variant={variant}>{children}</Text>
+        {loading ? <ActivityIndicator /> : null}
       </View>
     );
   } else if (withLoading) {
@@ -40,13 +41,14 @@ export default function ScreenTitle({
       <View
         style={{
           marginTop,
-          marginBottom: 42,
-          marginHorizontal: 24,
+          marginBottom,
+          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
+          gap: 16,
         }}>
-        <Text variant="displaySmall">{children}</Text>
-        {loading ? <ActivityIndicator style={{marginLeft: 16}} /> : null}
+        <Text variant={variant}>{children}</Text>
+        {loading ? <ActivityIndicator /> : null}
       </View>
     );
   } else if (withDataSouceIcon) {
@@ -54,20 +56,17 @@ export default function ScreenTitle({
       <View
         style={{
           marginTop,
-          marginBottom: 42,
-          marginHorizontal: 24,
+          marginBottom,
+          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
+          gap: 16,
         }}>
         <SourceLogo
           dataSource={dataSource}
           size={42}
         />
-        <Text
-          style={{marginLeft: 12}}
-          variant="displaySmall">
-          {children}
-        </Text>
+        <Text variant={variant}>{children}</Text>
       </View>
     );
   } else {
@@ -75,10 +74,10 @@ export default function ScreenTitle({
       <Text
         style={{
           marginTop,
-          marginBottom: 42,
-          marginHorizontal: 24,
+          marginBottom,
+          marginHorizontal,
         }}
-        variant="displaySmall">
+        variant={variant}>
         {children}
       </Text>
     );

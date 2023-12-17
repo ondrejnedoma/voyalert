@@ -14,6 +14,7 @@ export default function SourceLogo({dataSource, size}) {
   return (
     <Logo
       width={size}
+      height={size}
       color={theme.colors.primary}
     />
   );

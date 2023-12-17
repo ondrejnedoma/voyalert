@@ -10,19 +10,16 @@ export default function OneVoy({dataSource, voyNumber, onPress}) {
       <View
         style={{
           marginHorizontal: 24,
-          marginVertical: 6,
+          marginVertical: 12,
           flexDirection: 'row',
           alignItems: 'center',
+          gap: 12,
         }}>
         <SourceLogo
           dataSource={dataSource}
-          size={24}
+          size={32}
         />
-        <Text
-          style={{marginHorizontal: 8}}
-          variant="titleLarge">
-          {voyNumber}
-        </Text>
+        <Text variant="titleLarge">{voyNumber}</Text>
       </View>
     </TouchableRipple>
   );

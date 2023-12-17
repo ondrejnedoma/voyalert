@@ -17,14 +17,19 @@ export default function OneDonationItem({icon, address, note}) {
     return address;
   };
   return (
-    <TouchableRipple
-      style={{paddingHorizontal: 24, paddingVertical: 12}}
-      onPress={() => Clipboard.setString(address)}>
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 16}}>
+    <TouchableRipple onPress={() => Clipboard.setString(address)}>
+      <View
+        style={{
+          marginHorizontal: 24,
+          marginVertical: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12,
+        }}>
         <Icon
           source={icon}
           color={theme.colors.primary}
-          size={24}
+          size={32}
         />
         <View>
           <Text

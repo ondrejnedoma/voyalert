@@ -138,12 +138,12 @@ export default function ServerURLDialog({visible, setVisible}) {
   );
 }
 
-export const serverURLDialogState = async () => {
+export const serverURLState = async () => {
   const valueCustomServerURL = await AsyncStorage.getItem(
     'settings.customServerURL',
   );
   if (valueCustomServerURL !== null) {
-    return 'Use a custom server: ' + valueCustomServerURL;
+    return valueCustomServerURL;
   } else {
     return 'Use the default server';
   }

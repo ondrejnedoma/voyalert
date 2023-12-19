@@ -23,7 +23,9 @@ export let lastAlarmNotificationData = {};
 
 async function onMessageReceived(message) {
   const notificationType = message.data.notificationType;
-  const isAlarm = notificationType === 'alarm';
+  if (notificationType === 'silent') {
+    return;
+  }
   const darkScheme = Appearance.getColorScheme() === 'dark';
   const id = uuid.v4();
   const notificationChannel =
@@ -34,7 +36,7 @@ async function onMessageReceived(message) {
     ? notificationIcons[message.data.dataSource].dark
     : notificationIcons[message.data.dataSource].light;
   const parsedDate = parse(message.data.time, 'HH:mm', Date.now());
-  if (isAlarm) {
+  if (notificationType === 'alarm') {
     const channelId = await notifee.createChannel({
       id: notificationChannel,
       name: notificationChannel,

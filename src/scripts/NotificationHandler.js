@@ -1,5 +1,4 @@
 import {Appearance} from 'react-native';
-import uuid from 'react-native-uuid';
 
 import {parse} from 'date-fns';
 
@@ -27,11 +26,11 @@ async function onMessageReceived(message) {
     return;
   }
   const darkScheme = Appearance.getColorScheme() === 'dark';
-  const id = uuid.v4();
   const notificationChannel =
-    message.data.dataSource + message.data.voyNumber + ' ' + notificationType;
+  message.data.dataSource + message.data.voyNumber + ' ' + notificationType;
   const title = message.data.voyNumber + ' ' + message.data.type;
   const body = message.data.stop + ', ' + message.data.time;
+  const id = title + "_" + body;
   const icon = darkScheme
     ? notificationIcons[message.data.dataSource].dark
     : notificationIcons[message.data.dataSource].light;

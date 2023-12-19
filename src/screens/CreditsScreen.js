@@ -102,13 +102,7 @@ export default function CreditsScreen() {
       link: 'https://github.com/TehShrike/deepmerge',
       note: 'Object merge library',
       icon: 'code-tags',
-    },
-    {
-      name: 'react-native-uuid',
-      link: 'https://github.com/eugenehp/react-native-uuid',
-      note: 'UUID library',
-      icon: 'code-tags',
-    },
+    }
   ];
   const theme = useTheme();
   return (

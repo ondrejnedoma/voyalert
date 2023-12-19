@@ -26,14 +26,14 @@ export default function ServerURLDialog({visible, setVisible}) {
   const handleOnDonePress = async () => {
     if (serverType === 'default') {
       setCustomServerURL('');
-      await AsyncStorage.removeItem('settings.customServerURL');
+      await AsyncStorage.removeItem('settings.serverURL');
       setVisible(false);
     } else if (serverType === 'custom') {
       setLoading(true);
       const data = await apiPing({url: customServerURL});
       setLoading(false);
       if (data.ok) {
-        await AsyncStorage.setItem('settings.customServerURL', customServerURL);
+        await AsyncStorage.setItem('settings.serverURL', customServerURL);
         setVisible(false);
       } else {
         setErrorSnackbarText(data.error);
@@ -44,7 +44,7 @@ export default function ServerURLDialog({visible, setVisible}) {
   React.useEffect(() => {
     const fetchData = async () => {
       const valueCustomServerURL = await AsyncStorage.getItem(
-        'settings.customServerURL',
+        'settings.serverURL',
       );
       if (valueCustomServerURL !== null) {
         setServerType('custom');
@@ -138,9 +138,9 @@ export default function ServerURLDialog({visible, setVisible}) {
   );
 }
 
-export const serverURLState = async () => {
+export async function serverURLState() {
   const valueCustomServerURL = await AsyncStorage.getItem(
-    'settings.customServerURL',
+    'settings.serverURL',
   );
   if (valueCustomServerURL !== null) {
     return valueCustomServerURL;

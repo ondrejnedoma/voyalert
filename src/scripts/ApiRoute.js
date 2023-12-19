@@ -1,7 +1,7 @@
 import apiURLProvider from './ApiURLProvider';
 
 export default async function apiRoute({dataSource, voyNumber}) {
-  const baseUrl = apiURLProvider();
+  const baseUrl = await apiURLProvider();
   try {
     const res = await fetch(
       baseUrl + `/route?dataSource=${dataSource}&voyNumber=${voyNumber}`,

@@ -9,7 +9,7 @@ export default async function apiSetConfigForStop({
   field,
   value,
 }) {
-  const baseUrl = apiURLProvider();
+  const baseUrl = await apiURLProvider();
   const token = await messaging().getToken();
   try {
     const res = await fetch(baseUrl + '/setConfigForStop', {

@@ -1,9 +1,12 @@
-import {DEV_PORT, DEV_URL} from '@env';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function apiURLProvider() {
-  if (process.env.NODE_ENV === 'development') {
-    return DEV_URL + ':' + DEV_PORT;
+export default async function apiURLProvider() {
+  const valueCustomServerURL = await AsyncStorage.getItem(
+    'settings.serverURL',
+  );
+  if (valueCustomServerURL !== null) {
+    return valueCustomServerURL;
   } else {
-    return 'https://voyalert.102.nedomovi.net';
+    return 'https://voyalert.102.nedomovi.net'
   }
 }

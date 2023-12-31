@@ -1,79 +1,74 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# VoyAlert
 
-# Getting Started
+An app that alerts you (sends you a push notification or a persistent alarm) upon the arrival or a departure of a public transport connection from stops.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Packages
 
-## Step 1: Start the Metro Server
+This is a monorepo managed by npm workspaces and [lerna](https://lerna.js.org/docs/getting-started). The individual components of the app are stored in separate packages:
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+| Package Name                          | Description                                            |
+| ------------------------------------- | ------------------------------------------------------ |
+| [@voyalert/app](voyalert/app)         | The React Native app                                   |
+| [@voyalert/backend](voyalert/backend) | The Express backend server                             |
+| [@voyalert/get-ip](voyalert/get-ip)   | A tiny utility to log the IP address of the dev server |
+| @voyalert/i18n                        | COMING SOON                                            |
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Development progress
 
-```bash
-# using npm
-npm start
+Upcoming features and improvements can be viewed on the [Trello](https://trello.com/b/P7mUIuCp/voyalert) of VoyAlert.
 
-# OR using Yarn
-yarn start
+## Download
+
+COMING SOON
+
+## Build
+
+This section covers how to build the full app - both [@voyalert/app](voyalert/app) and [@voyalert/backend](voyalert/backend). **Consult the README files of the individual packages if you want to run them as dev or build them separately (COMING SOON)**. **Note that building for iOS is NOT supported as of now**.
+
+### Requirements
+
+- Node and NPM
+- OpenJDK 17 - [download prebuilt from Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
+- Android 13 SDK (installable within Android Studio)
+- Docker
+- Git (optional - only for git clone, the repository can also be downloaded as a ZIP)
+
+1. Start by cloning this repository and installing the dependencies:
+
+```sh
+git clone git@github.com:ondrejnedoma/voyalert.git
+cd voyalert
+npm i
 ```
 
-## Step 2: Start your Application
+2. Add the Android platform-tools to PATH. This folder is by default %LOCALAPPDATA%\Android\Sdk\platform-tools
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+3. Create the ANDROID_HOME environment variable. This folder is by default %LOCALAPPDATA%\Android\Sdk
 
-### For Android
+4. Setup the app signing keys and the according gradle variables. Use [these instructions](https://reactnative.dev/docs/signed-apk-android) on the React Native website for reference (more specific instructions COMING SOON).
 
-```bash
-# using npm
-npm run android
+5. This step is optional. If you want to be able to use the custom built backend with the app (and not only the default prod server), you will need to replace the `voyalert/packages/app/android/app/google-services.json` file with your own one, obtained from the Firebase console. You will also need to generate a Firebase admin credential from the Google API console, and place it in `voyalert/packages/backend/voyalert-xxxxx-firebase.json`. Then rename `voyalert/packages/backend/EXAMPLE.env` to `.env`, and change the `GOOGLE_APPLICATION_CREDENTIALS` variable inside the file to match the Firebase admin credential filename. In this case `voyalert-xxxxx-firebase.json`.
 
-# OR using Yarn
-yarn android
+6. Ensure Docker is up and ready to build the backend image:
+
+```sh
+docker ps
 ```
 
-### For iOS
+6. Run the build command. A new terminal window will pop up (the React Native Metro server), **you need to close that window for the build process to finish**:
 
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+```sh
+npm run build
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+7. If both the app and backend build process were successful, you will be able to find the app build at `voyalert/packages/app/android/app/build/outputs/bundle/release/app-release.aab`, and the backend will have built as a docker image `voyalertbackend`.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+8. This step is optional. If you want to transfer the docker image to a different system, you can run this command to save it as a file at `voyalert/packages/backend/voyalertbackend.tar`. This file can then be transfered to a different system and loaded with `docker load -i voyalertbackend.tar`:
 
-## Step 3: Modifying your App
+```sh
+npm run backend:save
+```
 
-Now that you have successfully run the app, let's modify it.
+## Contributing
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Feel free to open issues and pull requests regarding anything you think would be beneficial for this project!

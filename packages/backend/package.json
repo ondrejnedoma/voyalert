@@ -4,11 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "node --watch index.js",
     "build": "docker build . -t voyalertbackend",
     "save": "docker save voyalertbackend -o voyalertbackend.tar"
   },
-  "author": "",
+  "author": "ondrejnedoma",
   "license": "AGPL-3.0",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
@@ -17,6 +17,7 @@
     "express": "^4.18.2",
     "firebase-admin": "^11.11.0",
     "lowdb": "^6.1.1",
+    "mongoose": "^8.0.3",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2"
   }

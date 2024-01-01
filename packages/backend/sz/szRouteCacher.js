@@ -3,9 +3,11 @@ import * as cheerio from "cheerio";
 import { getAuth, getAllTrains } from "./szUtils.js";
 import { isSameDay } from "date-fns";
 
-const getOneTrain = async (token, sessionIdCookie, id) => {
+import { SzCachedRoute } from "../db-models/cachedRoute.js";
+
+const getOneTrain = async (token, sessionIdCookie, trainId) => {
   const res = await fetch(
-    `https://grapp.spravazeleznic.cz/OneTrain/RouteInfo/${token}?trainId=${id}`,
+    `https://grapp.spravazeleznic.cz/OneTrain/RouteInfo/${token}?trainId=${trainId}`,
     {
       headers: { cookie: sessionIdCookie },
     }
@@ -59,7 +61,7 @@ const getOneTrain = async (token, sessionIdCookie, id) => {
         stops.push(stop);
       }
       if (stop === "") {
-        process.exit();
+        console.warn("TRAIN " + number + " HAS AN EMPTY STOP!!!");
       }
     }
     i++;
@@ -68,48 +70,38 @@ const getOneTrain = async (token, sessionIdCookie, id) => {
     // Check if the current index is the first occurrence of the item in the array
     return array.indexOf(item) === index;
   });
-  return { ok: true, stops: uniqueStops, number };
+  return { ok: true, stops: uniqueStops };
 };
 
-const doSzCache = async (szCacheDb) => {
+const doSzCache = async () => {
   console.time("szTimer");
   const { token, sessionIdCookie } = await getAuth();
   const allTrains = await getAllTrains(token, sessionIdCookie);
   const filteredTrains = allTrains.Trains.map((train) => {
-    return { number: train.Title.replace(/\D/g, ""), id: train.Id };
+    return { name: train.Title.replace(/\D/g, ""), id: train.Id };
   });
-  const trainNumbers = filteredTrains.map((train) => train.number);
-  const existingNums = szCacheDb.data.routes.map((route) => route.number);
-  for (const [index, number] of trainNumbers.entries()) {
-    const routeDbIndex = existingNums.indexOf(number);
-    if (
-      routeDbIndex < 0 ||
-      !isSameDay(szCacheDb.data.routes[routeDbIndex].checked, Date.now())
-    ) {
-      const route = await getOneTrain(
-        token,
-        sessionIdCookie,
-        filteredTrains[index].id
-      );
+  for (const train of filteredTrains) {
+    const { name, id } = train;
+    const cachedRoute = await SzCachedRoute.findOne({ name });
+    if (!cachedRoute || !isSameDay(cachedRoute.checked, Date.now())) {
+      const route = await getOneTrain(token, sessionIdCookie, id);
       if (route.ok) {
-        if (routeDbIndex > -1) {
-          szCacheDb.data.routes.splice(routeDbIndex, 1);
-        }
-        szCacheDb.data.routes.push({
-          number: route.number,
-          stops: route.stops,
-          checked: Date.now(),
-        });
-        console.log("Added SZ " + route.number);
+        await SzCachedRoute.updateOne(
+          {
+            name,
+          },
+          {
+            $set: {
+              stops: route.stops,
+              checked: Date.now(),
+            },
+          },
+          { upsert: true }
+        );
+        console.log("Upserted SZ " + name);
       }
     }
   }
-  try {
-    await szCacheDb.write();
-  } catch (e) {
-    console.log("Error writing SZ DB: " + e);
-  }
-  console.log("Written SZ into DB");
   console.timeEnd("szTimer");
 };
 

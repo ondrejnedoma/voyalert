@@ -1,5 +1,5 @@
 import express from "express";
-import { subscriptionDb, routeCachesOfSources } from "./databases.js";
+import { routeCaches } from "./databases.js";
 import {
   voyNumberOnlyNumbersMiddleware,
   isSourceAcceptedMiddleware,
@@ -7,6 +7,9 @@ import {
   subscriptionExistsMiddleware,
   subscriptionNotExistsMiddleware,
 } from "./middlewares.js";
+
+import Subscription from "./db-models/subscription.js";
+
 const app = express();
 
 app.use(express.json());
@@ -22,12 +25,12 @@ app.post(
   isRouteCachedMiddleware,
   subscriptionNotExistsMiddleware,
   async (req, res) => {
-    subscriptionDb.data.subscriptions.push({
-      ...req.body,
-      config: { stops: [] },
-      stopsAlertedToday: [],
+    const { dataSource, voyNumber, token } = req.body;
+    Subscription.create({
+      dataSource,
+      voyNumber,
+      token,
     });
-    subscriptionDb.write();
     res.json({ ok: true });
   }
 );
@@ -38,43 +41,25 @@ app.post(
   isSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    let foundIndex = -1;
-    subscriptionDb.data.subscriptions.some((subscription, index) => {
-      if (
-        subscription.token === req.body.token &&
-        subscription.dataSource === req.body.dataSource &&
-        subscription.voyNumber === req.body.voyNumber
-      ) {
-        foundIndex = index;
-        return true;
-      } else {
-        return false;
-      }
+    const { dataSource, voyNumber, token } = req.body;
+    await Subscription.deleteOne({
+      dataSource,
+      voyNumber,
+      token,
     });
-
-    if (foundIndex < 0) {
-      return res.json({ ok: false, error: "Voy not found" });
-    }
-    subscriptionDb.data.subscriptions.splice(foundIndex, 1);
-    subscriptionDb.write();
     res.json({ ok: true });
   }
 );
 
-app.get("/list", (req, res) => {
+app.get("/list", async (req, res) => {
   if (!req.query.token) {
     return res.json({
       ok: false,
       error: "No Firebase cloud messaging token provided",
     });
   }
-  const subscriptionList = [];
-  for (const subscription of subscriptionDb.data.subscriptions) {
-    if (subscription.token === req.query.token) {
-      subscriptionList.push(subscription);
-    }
-  }
-  res.json({ ok: true, data: subscriptionList });
+  const list = await Subscription.find({ token: req.query.token });
+  res.json({ ok: true, data: list });
 });
 
 app.get(
@@ -82,10 +67,10 @@ app.get(
   voyNumberOnlyNumbersMiddleware,
   isSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
-  (req, res) => {
-    const stops = routeCachesOfSources[req.query.dataSource].data.routes.find(
-      (route) => route.number === req.query.voyNumber
-    ).stops;
+  async (req, res) => {
+    const { dataSource, voyNumber } = req.query;
+    const stops = (await routeCaches[dataSource].findOne({ name: voyNumber }))
+      .stops;
     return res.json({ ok: true, data: stops });
   }
 );
@@ -95,16 +80,18 @@ app.get(
   voyNumberOnlyNumbersMiddleware,
   isSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
-  (req, res) => {
-    const subscription = subscriptionDb.data.subscriptions.find(
-      (subscription) =>
-        subscription.token === req.query.token &&
-        subscription.dataSource === req.query.dataSource &&
-        subscription.voyNumber === req.query.voyNumber
-    );
+  async (req, res) => {
+    const { dataSource, voyNumber, token } = req.query;
+    const config = (
+      await Subscription.findOne({
+        dataSource,
+        voyNumber,
+        token,
+      })
+    ).config;
     return res.json({
       ok: true,
-      data: subscription.config,
+      data: config,
     });
   }
 );
@@ -114,42 +101,34 @@ app.post(
   voyNumberOnlyNumbersMiddleware,
   isSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
-  (req, res) => {
-    const subscription = subscriptionDb.data.subscriptions.find(
-      (subscription) =>
-        subscription.token === req.body.token &&
-        subscription.dataSource === req.body.dataSource &&
-        subscription.voyNumber === req.body.voyNumber
+  async (req, res) => {
+    const { dataSource, voyNumber, token, stop, field, value } = req.body;
+    const updateObject = {};
+    updateObject[`config.stops.$.${field}`] = value;
+    const subscription = await Subscription.findOne({
+      dataSource,
+      voyNumber,
+      token,
+    });
+    const stopIndex = subscription.config.stops.findIndex(
+      (oneStop) => oneStop.name === stop
     );
-    const subscriptionIndex =
-      subscriptionDb.data.subscriptions.indexOf(subscription);
-    const stop = subscriptionDb.data.subscriptions[
-      subscriptionIndex
-    ].config.stops.find((stop) => stop.name === req.body.stop);
-    let stopIndex =
-      subscriptionDb.data.subscriptions[subscriptionIndex].config.stops.indexOf(
-        stop
-      );
     if (stopIndex < 0) {
-      const newStopToSet = {
-        name: req.body.stop,
+      let newStop = {
+        name: stop,
         notifyArrival: false,
         notifyDeparture: false,
         alarmArrival: false,
         alarmDeparture: false,
+        arrivalAlreadyAlerted: false,
+        departureAlreadyAlerted: false,
       };
-      subscriptionDb.data.subscriptions[subscriptionIndex].config.stops.push(
-        newStopToSet
-      );
-      stopIndex =
-        subscriptionDb.data.subscriptions[
-          subscriptionIndex
-        ].config.stops.indexOf(newStopToSet);
+      newStop[field] = value;
+      subscription.config.stops.push(newStop);
+    } else {
+      subscription.config.stops[stopIndex][field] = value;
     }
-    subscriptionDb.data.subscriptions[subscriptionIndex].config.stops[
-      stopIndex
-    ][req.body.field] = req.body.value;
-    subscriptionDb.write();
+    subscription.save();
     return res.json({ ok: true });
   }
 );

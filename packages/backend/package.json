@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --watch index.js",
+    "start": "nodemon -V index.js",
     "build": "docker build . -t voyalertbackend",
     "save": "docker save voyalertbackend -o voyalertbackend.tar"
   },
@@ -16,7 +16,6 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "firebase-admin": "^11.11.0",
-    "lowdb": "^6.1.1",
     "mongoose": "^8.0.3",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2"

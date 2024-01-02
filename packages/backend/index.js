@@ -1,8 +1,9 @@
 import express from "express";
 import { routeCaches } from "./databases.js";
 import {
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware,
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   subscriptionExistsMiddleware,
   subscriptionNotExistsMiddleware,
@@ -20,16 +21,17 @@ app.get("/ping", (req, res) => {
 
 app.post(
   "/add",
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   subscriptionNotExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyNumber, token } = req.body;
+    const { dataSource, voyName, firebaseToken } = req.body;
     Subscription.create({
       dataSource,
-      voyNumber,
-      token,
+      voyName,
+      firebaseToken,
     });
     res.json({ ok: true });
   }
@@ -37,39 +39,40 @@ app.post(
 
 app.post(
   "/delete",
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyNumber, token } = req.body;
+    const { dataSource, voyName, firebaseToken } = req.body;
     await Subscription.deleteOne({
       dataSource,
-      voyNumber,
-      token,
+      voyName,
+      firebaseToken,
     });
     res.json({ ok: true });
   }
 );
 
-app.get("/list", async (req, res) => {
-  if (!req.query.token) {
-    return res.json({
-      ok: false,
-      error: "No Firebase cloud messaging token provided",
-    });
+app.get(
+  "/list",
+  requireFieldsMiddleware(["firebaseToken"]),
+  async (req, res) => {
+    const { firebaseToken } = req.query;
+    const list = await Subscription.find({ firebaseToken });
+    res.json({ ok: true, data: list });
   }
-  const list = await Subscription.find({ token: req.query.token });
-  res.json({ ok: true, data: list });
-});
+);
 
 app.get(
   "/route",
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware(["dataSource", "voyName"]),
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   async (req, res) => {
-    const { dataSource, voyNumber } = req.query;
-    const stops = (await routeCaches[dataSource].findOne({ name: voyNumber }))
+    const { dataSource, voyName } = req.query;
+    const stops = (await routeCaches[dataSource].findOne({ name: voyName }))
       .stops;
     return res.json({ ok: true, data: stops });
   }
@@ -77,16 +80,17 @@ app.get(
 
 app.get(
   "/getConfig",
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyNumber, token } = req.query;
+    const { dataSource, voyName, firebaseToken } = req.query;
     const config = (
       await Subscription.findOne({
         dataSource,
-        voyNumber,
-        token,
+        voyName,
+        firebaseToken,
       })
     ).config;
     return res.json({
@@ -98,17 +102,23 @@ app.get(
 
 app.post(
   "/setConfigForStop",
-  voyNumberOnlyNumbersMiddleware,
-  isSourceAcceptedMiddleware,
+  requireFieldsMiddleware([
+    "dataSource",
+    "voyName",
+    "firebaseToken",
+    "stop",
+    "field",
+    "value",
+  ]),
+  voyNameOnlyNumbersMiddleware,
+  isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyNumber, token, stop, field, value } = req.body;
-    const updateObject = {};
-    updateObject[`config.stops.$.${field}`] = value;
+    const { dataSource, voyName, firebaseToken, stop, field, value } = req.body;
     const subscription = await Subscription.findOne({
       dataSource,
-      voyNumber,
-      token,
+      voyName,
+      firebaseToken,
     });
     const stopIndex = subscription.config.stops.findIndex(
       (oneStop) => oneStop.name === stop

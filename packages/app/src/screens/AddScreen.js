@@ -10,12 +10,12 @@ import {
 } from 'react-native-paper';
 
 import DataSourceDialog from '../DataSourceDialog';
-import ScreenTitle from '../ScreenTitle';
-import apiAdd from '../scripts/ApiAdd';
+import apiAdd from '../api/ApiAdd';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function AddScreen({navigation}) {
   const [dataSource, setDataSource] = React.useState('');
-  const [voyNumber, setVoyNumber] = React.useState('');
+  const [voyName, setVoyName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
@@ -40,7 +40,7 @@ export default function AddScreen({navigation}) {
         'Based on real-time vehicle position - alerts should arrive on time',
       ],
       cons: ["Can't be set to alert about arrivals"],
-      hint: 'Enter the number exactly as it appears on CestujOK, without letters - 890302 39, 14018',
+      hint: 'Enter the connection name exactly as it appears on CestujOK, without letters - 890302 39, 14018',
       disabled: false,
     },
   ];
@@ -55,7 +55,7 @@ export default function AddScreen({navigation}) {
   });
   const handleAdd = () => {
     setLoading(true);
-    apiAdd({dataSource, voyNumber}).then(data => {
+    apiAdd({dataSource, voyName}).then(data => {
       setLoading(false);
       if (data.ok) {
         navigation.goBack();
@@ -116,9 +116,9 @@ export default function AddScreen({navigation}) {
           style={{marginVertical: 16}}
           mode="outlined"
           disabled={loading || !dataSource}
-          label="Number"
-          value={voyNumber}
-          onChangeText={text => setVoyNumber(text)}
+          label="Name/number/line"
+          value={voyName}
+          onChangeText={text => setVoyName(text)}
         />
         <Text
           style={{marginBottom: 16}}

@@ -26,43 +26,31 @@ const getOneTrain = async (token, sessionIdCookie, trainId) => {
   ) {
     return { ok: false };
   }
-  const number = $(
-    "body > div > div > div.routeHeader > div.row.hname.bold > div"
-  )
-    .text()
-    .trim()
-    .replace(/\D/g, "");
   const stops = [];
   let i = 1;
   while (true) {
+    let stopElement;
     if (i === 1) {
-      stops.push(
-        $("body > div > div > div.route > div > div:nth-child(1)").text().trim()
-      );
+      stopElement = $("body > div > div > div.route > div > div:nth-child(1)");
     } else if (i === 2) {
-      stops.push(
-        $(
-          "body > div > div > div.route > div > div:nth-child(5) > div:nth-child(4) > div:nth-child(1)"
-        )
-          .text()
-          .trim()
+      stopElement = $(
+        "body > div > div > div.route > div > div:nth-child(5) > div:nth-child(4) > div:nth-child(1)"
       );
     } else {
-      const stop = $(
+      stopElement = $(
         "body > div > div > div.route > div > div:nth-child(5) > div:nth-child(4)" +
           " > div:nth-child(9)".repeat(i - 2) +
           " > div:nth-child(1)"
-      )
-        .text()
-        .trim();
-      if (stop === "Informace o vlaku") {
-        break;
-      } else {
-        stops.push(stop);
-      }
-      if (stop === "") {
-        console.warn("TRAIN " + number + " HAS AN EMPTY STOP!!!");
-      }
+      );
+    }
+    const isLastStop = stopElement
+      .parent()
+      .children()
+      .toArray()
+      .some((el) => $(el).hasClass("routeFooter"));
+    stops.push(stopElement.text().trim());
+    if (isLastStop) {
+      break;
     }
     i++;
   }
@@ -77,28 +65,25 @@ const doSzCache = async () => {
   console.time("szTimer");
   const { token, sessionIdCookie } = await getAuth();
   const allTrains = await getAllTrains(token, sessionIdCookie);
-  const filteredTrains = allTrains.Trains.map((train) => {
-    return { name: train.Title.replace(/\D/g, ""), id: train.Id };
-  });
-  for (const train of filteredTrains) {
+  for (const train of allTrains) {
     const { name, id } = train;
     const cachedRoute = await SzCachedRoute.findOne({ name });
     if (!cachedRoute || !isSameDay(cachedRoute.checked, Date.now())) {
-      const route = await getOneTrain(token, sessionIdCookie, id);
-      if (route.ok) {
+      const { ok, stops } = await getOneTrain(token, sessionIdCookie, id);
+      if (ok) {
         await SzCachedRoute.updateOne(
           {
             name,
           },
           {
             $set: {
-              stops: route.stops,
+              stops: stops,
               checked: Date.now(),
             },
           },
           { upsert: true }
         );
-        console.log("Upserted SZ " + name);
+        console.log(`Upserted SZ "${name}"`);
       }
     }
   }

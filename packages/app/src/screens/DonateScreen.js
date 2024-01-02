@@ -2,8 +2,8 @@ import React from 'react';
 import {Linking, SafeAreaView, ScrollView, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 
-import OneDonateItem from '../OneDonateItem';
-import ScreenTitle from '../ScreenTitle';
+import OneDonateItem from '../components/OneDonateItem';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function DonateScreen() {
   const donateItems = [

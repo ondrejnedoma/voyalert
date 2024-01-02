@@ -1,12 +1,9 @@
-import { differenceInDays } from "date-fns";
+import { subDays } from "date-fns";
 
-const releaseOutdatedCache = (cacheDbs) => {
-  for (const cacheDb in cacheDbs) {
-    const newCacheDb = cacheDb.data.routes.filter(
-      (route) => differenceInDays(Date.now(), route.checked) < 14
-    );
-    cacheDb.data.routes = newCacheDb;
-    cacheDb.write();
+const releaseOutdatedCache = async (routeCaches) => {
+  for (const routeCache in routeCaches) {
+    const fourteenDaysAgo = subDays(Date.now(), 14);
+    await routeCache.deleteMany({ checked: { $lt: fourteenDaysAgo } });
   }
 };
 

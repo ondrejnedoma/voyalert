@@ -14,8 +14,8 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import ScreenTitle from './ScreenTitle';
-import apiPing from './scripts/ApiPing';
+import apiPing from './api/ApiPing';
+import ScreenTitle from './components/ScreenTitle';
 
 export default function ServerURLDialog({visible, setVisible}) {
   const [serverType, setServerType] = React.useState('default');
@@ -139,12 +139,10 @@ export default function ServerURLDialog({visible, setVisible}) {
 }
 
 export async function serverURLState() {
-  const valueCustomServerURL = await AsyncStorage.getItem(
-    'settings.serverURL',
-  );
+  const valueCustomServerURL = await AsyncStorage.getItem('settings.serverURL');
   if (valueCustomServerURL !== null) {
     return valueCustomServerURL;
   } else {
     return 'Use the default server';
   }
-};
+}

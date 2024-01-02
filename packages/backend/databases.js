@@ -6,8 +6,9 @@ import doSzCache from "./sz/szRouteCacher.js";
 import doIdsokCache from "./idsok/idsokRouteCacher.js";
 import doSzNotifier from "./sz/szNotifier.js";
 import doIdsokNotifier from "./idsok/idsokNotifier.js";
+import "dotenv/config";
 
-mongoose.connect("mongodb://127.0.0.1:27017/voyalert");
+mongoose.connect("mongodb://" + process.env.MONGODB_URL);
 
 import { SzCachedRoute, IdsokCachedRoute } from "./db-models/cachedRoute.js";
 
@@ -29,13 +30,13 @@ cron.schedule("0 0 * * *", () => {
 cron.schedule("*/5 * * * *", () => {
   if (!isMidnight()) {
     doSzCache();
-    // doIdsokCache();
+    doIdsokCache();
   }
 });
 
 cron.schedule("*/10 * * * * *", () => {
   if (!isMidnight()) {
-    // doSzNotifier();
-    // doIdsokNotifier();
+    doSzNotifier();
+    doIdsokNotifier();
   }
 });

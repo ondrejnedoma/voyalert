@@ -91,5 +91,9 @@ export const getAllTrains = async (token, sessionIdCookie) => {
     }
   );
   const data = await res.json();
-  return data;
+  const allTrains = data.Trains.map((train) => ({
+    id: train.Id,
+    name: train.Title.replace(/\D/g, ""),
+  }));
+  return allTrains;
 };

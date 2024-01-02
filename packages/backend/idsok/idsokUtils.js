@@ -3,5 +3,9 @@ export const getAllConnections = async () => {
     "https://www.cestujok.cz/idspublicservices/api/service/position"
   );
   const data = await res.json();
-  return data;
+  const allConnections = data.map((connection) => ({
+    id: connection.id,
+    name: connection.name.replace(/[^0-9\s]/g, "").trim(),
+  }));
+  return allConnections;
 };

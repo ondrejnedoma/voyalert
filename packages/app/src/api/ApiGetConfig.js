@@ -2,13 +2,13 @@ import messaging from '@react-native-firebase/messaging';
 
 import apiURLProvider from './ApiURLProvider';
 
-export default async function apiRoute({dataSource, voyNumber}) {
+export default async function apiRoute({dataSource, voyName}) {
   const baseUrl = await apiURLProvider();
-  const token = await messaging().getToken();
+  const firebaseToken = await messaging().getToken();
   try {
     const res = await fetch(
       baseUrl +
-        `/getConfig?token=${token}&dataSource=${dataSource}&voyNumber=${voyNumber}`,
+        `/getConfig?firebaseToken=${firebaseToken}&dataSource=${dataSource}&voyName=${voyName}`,
     );
     const data = await res.json();
     return data;

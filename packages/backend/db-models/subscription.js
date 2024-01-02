@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const subscriptionSchema = new mongoose.Schema({
   dataSource: String,
-  voyNumber: String,
-  token: String,
+  voyName: String,
+  firebaseToken: String,
   config: {
     type: {
       stops: [

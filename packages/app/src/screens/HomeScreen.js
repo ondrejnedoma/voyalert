@@ -11,10 +11,10 @@ import {
 
 import {useFocusEffect} from '@react-navigation/native';
 
-import HomeScreenMenu from '../HomeScreenMenu';
-import OneVoy from '../OneVoy';
-import ScreenTitle from '../ScreenTitle';
-import apiList from '../scripts/ApiList';
+import apiList from '../api/ApiList';
+import HomeScreenMenu from '../components/HomeScreenMenu';
+import OneVoy from '../components/OneVoy';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function HomeScreen({navigation}) {
   const [voyList, setVoyList] = React.useState([]);
@@ -68,9 +68,9 @@ export default function HomeScreen({navigation}) {
       <ScreenTitle smallMarginTop={true}>VoyAlert</ScreenTitle>
       {voyList.map(el => (
         <OneVoy
-          key={el.dataSource + el.voyNumber}
+          key={el.dataSource + el.voyName}
           dataSource={el.dataSource}
-          voyNumber={el.voyNumber}
+          voyName={el.voyName}
         />
       ))}
       <FAB

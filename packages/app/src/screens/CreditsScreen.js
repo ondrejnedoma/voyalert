@@ -2,8 +2,8 @@ import React from 'react';
 import {Linking, SafeAreaView, ScrollView} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 
-import OneCreditsItem from '../OneCreditsItem';
-import ScreenTitle from '../ScreenTitle';
+import OneCreditsItem from '../components/OneCreditsItem';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function CreditsScreen() {
   const creditsItems = [
@@ -102,7 +102,7 @@ export default function CreditsScreen() {
       link: 'https://github.com/TehShrike/deepmerge',
       note: 'Object merge library',
       icon: 'code-tags',
-    }
+    },
   ];
   const theme = useTheme();
   return (

@@ -6,10 +6,10 @@ import {useNavigation} from '@react-navigation/native';
 
 import SourceLogo from './SourceLogo';
 
-export default function OneVoy({dataSource, voyNumber}) {
+export default function OneVoy({dataSource, voyName}) {
   const navigation = useNavigation();
   const handleOnPress = () => {
-    navigation.navigate('Config', {dataSource, voyNumber});
+    navigation.navigate('Config', {dataSource, voyName});
   };
   return (
     <TouchableRipple onPress={handleOnPress}>
@@ -25,7 +25,7 @@ export default function OneVoy({dataSource, voyNumber}) {
           dataSource={dataSource}
           size={28}
         />
-        <Text variant="titleLarge">{voyNumber}</Text>
+        <Text variant="titleLarge">{voyName}</Text>
       </View>
     </TouchableRipple>
   );

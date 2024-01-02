@@ -1,29 +1,23 @@
 import { getMessaging } from "firebase-admin/messaging";
 
-const removeInvalidSubscriptions = (subscriptionDb, cacheDbs) => {
-  let newSubscriptionDb = [];
+import Subscription from "../db-models/subscription.js";
 
+const removeInvalidSubscriptions = async (routeCaches) => {
   //Remove subscriptions for Voys which are not cached anymore
-  for (const cacheDb of cacheDbs) {
-    const validSubscriptions = subscriptionDb.data.subscriptions.filter(
-      (subscription) => {
-        const isValidRoute = cacheDb.data.routes.some(
-          (route) => subscription.voyNumber === route.number
-        );
-        return isValidRoute;
-      }
-    );
-    newSubscriptionDb = [...newSubscriptionDb, ...validSubscriptions];
+  for (const routeCache of routeCaches) {
+    const cachedNames = (await routeCache.find({})).map((route) => route.name);
+    await Subscription.deleteMany({ voyName: { $nin: cachedNames } });
   }
-  subscriptionDb.data.subscriptions = newSubscriptionDb;
 
   // Remove subscriptions for FCM tokens which are not registered
-  for (const [
-    index,
-    subscription,
-  ] of subscriptionDb.data.subscriptions.entries()) {
+  const allFirebaseTokens = (await Subscription.find({})).map(
+    (subscription) => subscription.firebaseToken
+  );
+  const uniqueFirebaseTokens = [...new Set(allFirebaseTokens)];
+  const invalidFirebaseTokens = [];
+  for (const firebaseToken of uniqueFirebaseTokens) {
     const message = {
-      token: subscription.token,
+      token: firebaseToken,
       data: {
         notificationType: "silent",
       },
@@ -36,14 +30,13 @@ const removeInvalidSubscriptions = (subscriptionDb, cacheDbs) => {
       .catch((e) => {
         if (e.code === "messaging/registration-token-not-registered") {
           console.warn("Removing invalid token " + subscription.token);
-          subscriptionDb.data.subscriptions.splice(index, 1);
+          invalidFirebaseTokens.push(firebaseToken);
         } else {
           console.warn("Unexpected FCM error: " + e);
         }
       });
   }
-
-  subscriptionDb.write();
+  Subscription.deleteMany({ firebaseToken: { $in: invalidFirebaseTokens } });
 };
 
 export default removeInvalidSubscriptions;

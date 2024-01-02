@@ -2,13 +2,13 @@ import React from 'react';
 import {View} from 'react-native';
 import {Button, Checkbox, Dialog, Portal} from 'react-native-paper';
 
-import apiSetConfigForStop from './scripts/ApiSetConfigForStop';
+import apiSetConfigForStop from './api/ApiSetConfigForStop';
 
 export default function StopConfigDialog({
   visible,
   onDismiss,
   dataSource,
-  voyNumber,
+  voyName,
   stopName,
   config,
   options,
@@ -24,7 +24,7 @@ export default function StopConfigDialog({
     setLoading(true);
     apiSetConfigForStop({
       dataSource,
-      voyNumber,
+      voyName,
       stop: stopName,
       field,
       value,

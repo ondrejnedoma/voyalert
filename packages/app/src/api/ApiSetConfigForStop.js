@@ -2,16 +2,29 @@ import messaging from '@react-native-firebase/messaging';
 
 import apiURLProvider from './ApiURLProvider';
 
-export default async function apiAdd({dataSource, voyNumber}) {
+export default async function apiSetConfigForStop({
+  dataSource,
+  voyName,
+  stop,
+  field,
+  value,
+}) {
   const baseUrl = await apiURLProvider();
-  const token = await messaging().getToken();
+  const firebaseToken = await messaging().getToken();
   try {
-    const res = await fetch(baseUrl + '/add', {
+    const res = await fetch(baseUrl + '/setConfigForStop', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({token, dataSource, voyNumber}),
+      body: JSON.stringify({
+        firebaseToken,
+        dataSource,
+        voyName,
+        stop,
+        field,
+        value,
+      }),
     });
     const data = await res.json();
     return data;

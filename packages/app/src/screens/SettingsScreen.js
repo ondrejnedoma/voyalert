@@ -3,9 +3,9 @@ import {SafeAreaView, ScrollView} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import OneSettingsItem from '../OneSettingsItem';
-import ScreenTitle from '../ScreenTitle';
 import ServerURLDialog, {serverURLState} from '../ServerURLDialog';
+import OneSettingsItem from '../components/OneSettingsItem';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function SettingsScreen() {
   const [serverURLDialogVisible, setServerURLDialogVisible] =

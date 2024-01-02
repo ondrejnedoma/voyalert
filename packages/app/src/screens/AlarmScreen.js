@@ -14,10 +14,10 @@ import {differenceInSeconds, format, parse} from 'date-fns';
 import notifee from '@notifee/react-native';
 import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
 
-import SourceLogo from './SourceLogo';
-import {lastAlarmNotificationData} from './scripts/NotificationHandler';
+import SourceLogo from '../components/SourceLogo';
+import {lastAlarmNotificationData} from '../scripts/NotificationHandler';
 
-export default function Alarm() {
+export default function AlarmScreen() {
   const colorScheme = useColorScheme();
   const {theme} = useMaterial3Theme();
   const themeToApply =

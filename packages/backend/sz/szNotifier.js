@@ -3,16 +3,18 @@ import * as cheerio from "cheerio";
 import firebaseNotify from "../notify.js";
 import { getAuth, getAllTrains } from "./szUtils.js";
 
-const alertOneTrain = async (
+import Subscription from "../db-models/subscription.js";
+
+const alertOneTrain = async ({
   token,
   sessionIdCookie,
-  id,
+  trainId,
   stops,
   firebaseToken,
-  voyNumber
-) => {
+  voyName,
+}) => {
   const res = await fetch(
-    `https://grapp.spravazeleznic.cz/OneTrain/RouteInfo/${token}?trainId=${id}`,
+    `https://grapp.spravazeleznic.cz/OneTrain/RouteInfo/${token}?trainId=${trainId}`,
     {
       headers: {
         cookie: sessionIdCookie,
@@ -24,7 +26,6 @@ const alertOneTrain = async (
   if ($("div.alert").text().includes("nejsou dostupné")) {
     return { ok: false };
   }
-  const alertedStops = [];
   for (const stop of stops) {
     const stationElement = $("div.row > div.col-lg-4")
       .filter(function () {
@@ -40,20 +41,12 @@ const alertOneTrain = async (
         .first();
       if (departureElement.text()) {
         if (!departureElement.attr("class").includes("Future")) {
-          if (stop.notifyDeparture) {
-            firebaseNotify(firebaseToken, {
-              dataSource: "sz",
-              voyNumber,
-              type: "departure",
-              time: departureElement.text().trim(),
-              stop: stop.name,
-              notificationType: stop.alarmDeparture ? "alarm" : "notification",
-            });
-            alertedStops.push(stop.name);
+          if (stop.notifyDeparture && !stop.departureAlreadyAlerted) {
+            await szNotify("departure", departureElement.text().trim());
+            continue;
           }
         }
       }
-      continue;
     }
     const departureElement = stationParent
       .find("div:nth-child(8) > div:nth-child(1) > span")
@@ -63,88 +56,88 @@ const alertOneTrain = async (
       .first();
     if (departureElement.text()) {
       if (!departureElement.attr("class").includes("Future")) {
-        if (stop.notifyDeparture) {
-          firebaseNotify(firebaseToken, {
-            dataSource: "sz",
-            voyNumber,
-            type: "departure",
-            time: departureElement.text().trim(),
-            stop: stop.name,
-            notificationType: stop.alarmDeparture ? "alarm" : "notification",
-          });
-          alertedStops.push(stop.name);
+        if (stop.notifyDeparture && !stop.departureAlreadyAlerted) {
+          await szNotify("departure", departureElement.text().trim());
         }
       }
     }
     if (arrivalElement.text()) {
       if (!arrivalElement.attr("class").includes("Future")) {
-        if (stop.notifyArrival) {
-          firebaseNotify(firebaseToken, {
-            dataSource: "sz",
-            voyNumber,
-            type: "arrival",
-            time: arrivalElement.text().trim(),
-            stop: stop.name,
-            notificationType: stop.alarmArrival ? "alarm" : "notification",
-          });
-          alertedStops.push(stop.name);
+        if (stop.notifyArrival && !stop.arrivalAlreadyAlerted) {
+          await szNotify("arrival", arrivalElement.text().trim());
         }
       }
     }
+    async function szNotify(type, time) {
+      const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+      firebaseNotify(firebaseToken, {
+        dataSource: "sz",
+        voyName,
+        type,
+        time,
+        stop: stop.name,
+        notificationType: stop["alarm" + capitalizedType]
+          ? "alarm"
+          : "notification",
+      });
+      const subscription = await Subscription.findOne({
+        dataSource: "sz",
+        voyName,
+        firebaseToken,
+      });
+      const stopIndex = subscription.config.stops.findIndex(
+        (oneStop) => oneStop.name === stop.name
+      );
+      subscription.config.stops[stopIndex][type + "AlreadyAlerted"] = true;
+      await subscription.save();
+    }
   }
-  return { ok: true, alertedStops: alertedStops };
+  return { ok: true };
 };
 
-const doSzNotifier = async (subscriptionDb) => {
+const doSzNotifier = async () => {
   const { token, sessionIdCookie } = await getAuth();
   const allTrains = await getAllTrains(token, sessionIdCookie);
-  for (const [
-    index,
-    subscription,
-  ] of subscriptionDb.data.subscriptions.entries()) {
-    if (subscription.dataSource !== "sz") continue;
-    let trainId;
-    allTrains.Trains.some((train) => {
-      if (train.Title.replace(/\D/g, "") === subscription.voyNumber) {
-        trainId = train.Id;
-        return true;
-      }
-      return false;
-    });
-    let stopsToCheck;
-    if (subscription.config.stops) {
-      stopsToCheck = subscription.config.stops.filter(
-        (stop) => !subscription.stopsAlertedToday.includes(stop.name)
-      );
-    } else {
-      continue;
-    }
+  const allSubscriptions = await Subscription.find({
+    dataSource: "sz",
+    "config.stops": { $ne: [] },
+  });
+  for (const subscription of allSubscriptions) {
+    const { voyName, firebaseToken, config } = subscription;
+    // Find the trainId from allTrains based on the subscription's voyName
+    const trainId = allTrains.find((train) => train.name === voyName).id;
+    // Filter stops into stopsToCheck based on if arrivalAlreadyAlerted or departureAlreadyAlerted are false
+    const stopsToCheck = config.stops.filter(
+      (stop) => !stop.arrivalAlreadyAlerted || !stop.departureAlreadyAlerted
+    );
+    // If the trainId is not found, meaning it's not available on GRAPP and at least some stop has been alerted about, assume it has finished its journey
     if (!trainId) {
-      if (subscription.stopsAlertedToday.length > 0) {
-        console.log("Wipe subscription " + subscription.voyNumber);
-        subscriptionDb.data.subscriptions[index].stopsAlertedToday = [];
-        subscriptionDb.write();
+      if (
+        config.stops.some(
+          (stop) => stop.arrivalAlreadyAlerted || stop.departureAlreadyAlerted
+        )
+      ) {
+        console.log(`Reset alerted stops for subscription sz ${voyName}`);
+        await Subscription.updateOne(
+          { dataSource: "sz", voyName, firebaseToken },
+          {
+            $set: {
+              "config.stops.$[].arrivalAlreadyAlerted": false,
+              "config.stops.$[].departureAlreadyAlerted": false,
+            },
+          }
+        );
       }
       continue;
     }
-    const data = await alertOneTrain(
+    await alertOneTrain({
       token,
       sessionIdCookie,
       trainId,
-      stopsToCheck,
-      subscription.token,
-      subscription.voyNumber
-    );
-    if (data.ok) {
-      if (data.alertedStops && data.alertedStops.length > 0) {
-        for (const alertedStop of data.alertedStops) {
-          subscriptionDb.data.subscriptions[index].stopsAlertedToday.push(
-            alertedStop
-          );
-        }
-        subscriptionDb.write();
-      }
-    }
+      stops: stopsToCheck,
+      firebaseToken,
+      voyName,
+    });
   }
 };
 

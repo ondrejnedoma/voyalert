@@ -10,66 +10,86 @@ const getReqData = (req) => {
   }
 };
 
-export const voyNumberOnlyNumbersMiddleware = (req, res, next) => {
-  const reqData = getReqData(req);
-  if (!/^ *\d+ *( \d+)* *$/.test(reqData.voyNumber)) {
-    return res.json({ ok: false, error: "Only numbers allowed" });
-  }
-  next();
+export const requireFieldsMiddleware = (fields) => {
+  return (req, res, next) => {
+    const reqData = getReqData(req);
+    const missingFields = fields.filter(
+      (field) => !Object.keys(reqData).includes(field)
+    );
+    if (missingFields.length > 0) {
+      return res.json({
+        ok: false,
+        error: `Field(s) ${missingFields} are required`,
+      });
+    }
+    next();
+  };
 };
 
-export const isSourceAcceptedMiddleware = (req, res, next) => {
-  const reqData = getReqData(req);
-  if (!Object.keys(routeCaches).includes(reqData.dataSource)) {
+export const voyNameOnlyNumbersMiddleware = (req, res, next) => {
+  const { voyName } = getReqData(req);
+  if (!/^ *\d+ *( \d+)* *$/.test(voyName)) {
     return res.json({
       ok: false,
-      error: `Source ${reqData.dataSource} not accepted`,
+      error: "Only numbers allowed for the voyName field",
     });
   }
   next();
 };
 
-export const isRouteCachedMiddleware = (req, res, next) => {
-  const { dataSource, voyNumber } = getReqData(req);
-  const route = routeCaches[dataSource].findOne({
-    name: voyNumber,
+export const isDataSourceAcceptedMiddleware = (req, res, next) => {
+  const { dataSource } = getReqData(req);
+  const acceptedDataSources = Object.keys(routeCaches);
+  if (!acceptedDataSources.includes(dataSource)) {
+    return res.json({
+      ok: false,
+      error: `"${dataSource}" not accepted for field dataSource. Accepted values are: ${acceptedDataSources}`,
+    });
+  }
+  next();
+};
+
+export const isRouteCachedMiddleware = async (req, res, next) => {
+  const { dataSource, voyName } = getReqData(req);
+  const route = await routeCaches[dataSource].findOne({
+    name: voyName,
   });
   if (!route) {
     return res.json({
       ok: false,
-      error: `${voyNumber} does not seem to be a valid number (route not cached)`,
+      error: `The route for voy ${dataSource} ${voyName} is not cached`,
     });
   }
   next();
 };
 
 export const subscriptionExistsMiddleware = async (req, res, next) => {
-  const { dataSource, voyNumber, token } = getReqData(req);
+  const { dataSource, voyName, firebaseToken } = getReqData(req);
   const subscription = await Subscription.findOne({
     dataSource,
-    voyNumber,
-    token,
+    voyName,
+    firebaseToken,
   });
   if (!subscription) {
     return res.json({
       ok: false,
-      error: `Voy ${dataSource} ${voyNumber} for Firebase token ${token} not found`,
+      error: `Voy ${dataSource} ${voyName} for Firebase token ${firebaseToken} not found`,
     });
   }
   next();
 };
 
 export const subscriptionNotExistsMiddleware = async (req, res, next) => {
-  const { dataSource, voyNumber, token } = getReqData(req);
+  const { dataSource, voyName, firebaseToken } = getReqData(req);
   const subscription = await Subscription.findOne({
     dataSource,
-    voyNumber,
-    token,
+    voyName,
+    firebaseToken,
   });
   if (subscription) {
     return res.json({
       ok: false,
-      error: `Voy ${dataSource} ${voyNumber} already exists for Firebase token ${token}`,
+      error: `Voy ${dataSource} ${voyName} already exists for Firebase token ${firebaseToken}`,
     });
   }
   next();

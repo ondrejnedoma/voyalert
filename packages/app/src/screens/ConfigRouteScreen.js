@@ -4,14 +4,14 @@ import {ActivityIndicator, Snackbar, Text} from 'react-native-paper';
 
 import {useFocusEffect} from '@react-navigation/native';
 
-import OneRouteStop from '../OneRouteStop';
-import ScreenTitle from '../ScreenTitle';
 import StopConfigDialog from '../StopConfigDialog';
-import apiGetConfig from '../scripts/ApiGetConfig';
-import apiRoute from '../scripts/ApiRoute';
+import apiGetConfig from '../api/ApiGetConfig';
+import apiRoute from '../api/ApiRoute';
+import OneRouteStop from '../components/OneRouteStop';
+import ScreenTitle from '../components/ScreenTitle';
 
 export default function ConfigRouteScreen({route}) {
-  const {dataSource, voyNumber} = route.params;
+  const {dataSource, voyName} = route.params;
   const [stops, setStops] = React.useState();
   const [config, setConfig] = React.useState();
   const [stopConfigDialogVisible, setStopConfigDialogVisible] =
@@ -32,7 +32,7 @@ export default function ConfigRouteScreen({route}) {
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
   const handleRoute = async () => {
-    const data = await apiRoute({dataSource, voyNumber});
+    const data = await apiRoute({dataSource, voyName});
     if (data.ok) {
       setStops(data.data);
     } else {
@@ -41,7 +41,7 @@ export default function ConfigRouteScreen({route}) {
     }
   };
   const handleGetConfig = async () => {
-    const data = await apiGetConfig({dataSource, voyNumber});
+    const data = await apiGetConfig({dataSource, voyName});
     if (data.ok) {
       setConfig(data.data);
     } else {
@@ -134,7 +134,7 @@ export default function ConfigRouteScreen({route}) {
           visible={stopConfigDialogVisible}
           onDismiss={onDialogDismissed}
           dataSource={dataSource}
-          voyNumber={voyNumber}
+          voyName={voyName}
           stopName={stopConfigDialogStopName}
           config={stopConfigDialogConfig}
           options={stopConfigDialogOptions}

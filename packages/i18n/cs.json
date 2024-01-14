@@ -1,0 +1,10 @@
+{
+    "home": {
+        "menu": {
+            "settings": "Nastavení ⚙️",
+            "donate": "Přispět 💸",
+            "reportBug": "Nahlásit bug 🪲",
+            "credits": "Poděkování 🏆"
+        }
+    }
+}

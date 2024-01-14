@@ -1,7 +1,5 @@
 import React from 'react';
 import {PermissionsAndroid, StatusBar, useColorScheme} from 'react-native';
-// TODO
-import {getCurrencies, getLocales} from 'react-native-localize';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {
   MD3DarkTheme,

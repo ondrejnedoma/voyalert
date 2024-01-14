@@ -1,0 +1,10 @@
+{
+    "home": {
+        "menu": {
+            "settings": "Settings ⚙️",
+            "donate": "Donate 💸",
+            "reportBug": "Report a bug 🪲",
+            "credits": "Credits 🏆"
+        }
+    }
+}

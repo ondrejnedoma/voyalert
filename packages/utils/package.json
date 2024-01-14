@@ -1,10 +1,10 @@
 {
-  "name": "@voyalert/get-ip",
+  "name": "@voyalert/utils",
   "version": "0.3",
-  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "getip": "node getip.js",
+    "cleanup": "node cleanup.js"
   },
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",

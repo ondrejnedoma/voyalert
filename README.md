@@ -6,12 +6,12 @@ An app that alerts you (sends you a push notification or a persistent alarm) upo
 
 This is a monorepo managed by npm workspaces and [lerna](https://lerna.js.org/docs/getting-started). The individual components of the app are stored in separate packages:
 
-| Package Name                          | Description                                            |
-| ------------------------------------- | ------------------------------------------------------ |
-| [@voyalert/app](voyalert/app)         | The React Native app                                   |
-| [@voyalert/backend](voyalert/backend) | The Express backend server                             |
-| [@voyalert/get-ip](voyalert/get-ip)   | A tiny utility to log the IP address of the dev server |
-| @voyalert/i18n                        | COMING SOON                                            |
+| Package Name                          | Description                |
+| ------------------------------------- | -------------------------- |
+| [@voyalert/app](voyalert/app)         | The React Native app       |
+| [@voyalert/backend](voyalert/backend) | The Express backend server |
+| [@voyalert/utils](voyalert/utils)     | Tiny dev utility scripts   |
+| @voyalert/i18n                        | COMING SOON                |
 
 ## Development progress
 

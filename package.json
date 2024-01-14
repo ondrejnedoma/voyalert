@@ -5,17 +5,17 @@
     "packages/*"
   ],
   "scripts": {
-    "app:metro": "lerna run start --scope @voyalert/app",
-    "app:start": "lerna run android --scope @voyalert/app --stream",
-    "backend:start": "lerna run start --scope @voyalert/backend --stream",
-    "start": "npm run get-ip && concurrently \"npm run app:start\" \"npm run backend:start\"",
-    "app:build": "lerna run build --scope @voyalert/app",
-    "backend:build": "lerna run build --scope @voyalert/backend",
+    "app:metro": "npm run start --workspace @voyalert/app",
+    "app:start": "npm run android --workspace @voyalert/app --stream",
+    "backend:start": "npm run start --workspace @voyalert/backend --stream",
+    "start": "npm run getip && concurrently \"npm run app:start\" \"npm run backend:start\"",
+    "app:build": "npm run build --workspace @voyalert/app",
+    "backend:build": "npm run build --workspace @voyalert/backend",
     "build": "npm run app:build && npm run backend:build",
-    "get-ip": "lerna run start --scope @voyalert/get-ip"
+    "getip": "npm run getip --workspace @voyalert/utils",
+    "cleanup": "npm run cleanup --workspace @voyalert/utils"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "lerna": "^8.0.1"
+    "concurrently": "^8.2.2"
   }
 }

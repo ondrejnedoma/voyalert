@@ -5,8 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "app:metro": "npm run start --workspace @voyalert/app",
-    "app:start": "npm run android --workspace @voyalert/app",
+    "app:start": "npm run start --workspace @voyalert/app",
     "backend:start": "npm run start --workspace @voyalert/backend",
     "start": "npm run getip && concurrently \"npm run app:start\" \"npm run backend:start\"",
     "app:build": "npm run build --workspace @voyalert/app",

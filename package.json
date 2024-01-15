@@ -5,16 +5,19 @@
     "packages/*"
   ],
   "scripts": {
+    "postinstall": "patch-package",
     "app:start": "npm run start --workspace @voyalert/app",
     "backend:start": "npm run start --workspace @voyalert/backend",
     "start": "npm run getip && concurrently \"npm run app:start\" \"npm run backend:start\"",
     "app:build": "npm run build --workspace @voyalert/app",
     "backend:build": "npm run build --workspace @voyalert/backend",
     "build": "npm run app:build && npm run backend:build",
-    "getip": "npm run getip --workspace @voyalert/utils",
-    "cleanup": "npm run cleanup --workspace @voyalert/utils"
+    "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
+    "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils",
+    "utils:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "patch-package": "^8.0.0"
   }
 }

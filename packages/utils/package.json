@@ -3,8 +3,9 @@
   "version": "0.3",
   "type": "module",
   "scripts": {
-    "getip": "node getip.js",
-    "cleanup": "node cleanup.js"
+    "get-ip": "node getIp.js",
+    "setup-modules": "node reinstallModules.js",
+    "gradlew-clean": "node gradlewClean.js"
   },
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",

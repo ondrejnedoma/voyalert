@@ -1,0 +1,20 @@
+diff --git a/node_modules/@pchmn/expo-material3-theme/android/build.gradle b/node_modules/@pchmn/expo-material3-theme/android/build.gradle
+index f0c0ffc..cbe6531 100644
+--- a/node_modules/@pchmn/expo-material3-theme/android/build.gradle
++++ b/node_modules/@pchmn/expo-material3-theme/android/build.gradle
+@@ -54,12 +54,12 @@ android {
+   compileSdkVersion safeExtGet("compileSdkVersion", 31)
+ 
+   compileOptions {
+-    sourceCompatibility JavaVersion.VERSION_11
+-    targetCompatibility JavaVersion.VERSION_11
++    sourceCompatibility JavaVersion.VERSION_17
++    targetCompatibility JavaVersion.VERSION_17
+   }
+ 
+   kotlinOptions {
+-    jvmTarget = JavaVersion.VERSION_11.majorVersion
++    jvmTarget = JavaVersion.VERSION_17.majorVersion
+   }
+ 
+   defaultConfig {

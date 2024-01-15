@@ -4,7 +4,7 @@ An app that alerts you (sends you a push notification or a persistent alarm) upo
 
 ## Packages
 
-This is a monorepo managed by npm workspaces and [lerna](https://lerna.js.org/docs/getting-started). The individual components of the app are stored in separate packages:
+This is a monorepo managed by npm workspaces. The individual components of the app are stored in separate packages:
 
 | Package Name                          | Description                |
 | ------------------------------------- | -------------------------- |
@@ -15,7 +15,7 @@ This is a monorepo managed by npm workspaces and [lerna](https://lerna.js.org/do
 
 ## Development progress
 
-Upcoming features and improvements can be viewed on the [Trello](https://trello.com/b/P7mUIuCp/voyalert) of VoyAlert.
+Upcoming features and improvements can be viewed on [the Trello of VoyAlert](https://trello.com/b/P7mUIuCp/voyalert).
 
 ## Download
 
@@ -29,7 +29,7 @@ This section covers how to build the full app - both [@voyalert/app](voyalert/ap
 
 - Node and NPM
 - OpenJDK 17 - [download prebuilt from Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
-- Android 13 SDK (installable within Android Studio)
+- Android 14 SDK (API 34) (installable within Android Studio)
 - Docker
 - Git (optional - only for git clone, the repository can also be downloaded as a ZIP)
 

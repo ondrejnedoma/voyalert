@@ -8,7 +8,6 @@
     "postinstall": "patch-package",
     "app:start": "npm run start --workspace @voyalert/app",
     "backend:start": "npm run start --workspace @voyalert/backend",
-    "start": "npm run getip && concurrently \"npm run app:start\" \"npm run backend:start\"",
     "app:build": "npm run build --workspace @voyalert/app",
     "backend:build": "npm run build --workspace @voyalert/backend",
     "build": "npm run app:build && npm run backend:build",

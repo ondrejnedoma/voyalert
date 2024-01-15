@@ -8,12 +8,13 @@ import {
   subscriptionExistsMiddleware,
   subscriptionNotExistsMiddleware,
 } from "./middlewares.js";
-
+import { i18nRegister } from "./i18nHandler.js";
 import Subscription from "./db-models/subscription.js";
 
 const app = express();
 
 app.use(express.json());
+i18nRegister(app);
 
 app.get("/ping", (req, res) => {
   res.json({ ok: true });

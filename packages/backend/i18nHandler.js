@@ -1,21 +1,12 @@
-import path from "path";
 import i18next from "i18next";
 import i18nextMiddleware from "i18next-http-middleware";
-import Backend from "i18next-fs-backend";
+import resources from "./i18n-resources.json" assert { type: "json" };
 
-import { i18nGetPath } from "@voyalert/i18n";
-const i18nPath = i18nGetPath();
-
-i18next
-  .use(Backend)
-  .use(i18nextMiddleware.LanguageDetector)
-  .init({
-    backend: {
-      loadPath: path.join(i18nPath + "/languages/{{lng}}/{{ns}}.json"),
-      addPath: path.join(i18nPath + "/languages/{{lng}}/{{ns}}.missing.json"),
-    },
-    fallbackLng: "en",
-  });
+i18next.use(i18nextMiddleware.LanguageDetector).init({
+  resources,
+  fallbackLng: "en",
+  load: "languageOnly",
+});
 
 export const i18nRegister = (app) => {
   app.use(i18nextMiddleware.handle(i18next));

@@ -5,12 +5,13 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && npm run i18n",
     "app:start": "npm run start --workspace @voyalert/app",
     "backend:start": "npm run start --workspace @voyalert/backend",
     "app:build": "npm run build --workspace @voyalert/app",
     "backend:build": "npm run build --workspace @voyalert/backend",
     "build": "npm run app:build && npm run backend:build",
+    "i18n": "npm run start --workspace @voyalert/i18n",
     "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
     "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils",
     "utils:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils"

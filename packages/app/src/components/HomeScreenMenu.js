@@ -1,26 +1,27 @@
 import React from 'react';
 import {IconButton, Linking, Menu} from 'react-native-paper';
-
 import {useNavigation} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 
 export default function HomeScreenMenu({visible, setVisible}) {
   const navigation = useNavigation();
+  const {t} = useTranslation();
   const menuItems = [
     {
-      title: 'Settings ⚙️',
+      title: t('home.menu.settings'),
       onPress: () => navigation.navigate('Settings'),
     },
     {
-      title: 'Donate 💸',
+      title: t('home.menu.donate'),
       onPress: () => navigation.navigate('Donate'),
     },
     {
-      title: 'Report a bug 🪲',
+      title: t('home.menu.reportBug'),
       onPress: () =>
         Linking.openURL('https://github.com/ondrejnedoma/voyalert/issues/new'),
     },
     {
-      title: 'Credits 🏆',
+      title: t('home.menu.credits'),
       onPress: () => navigation.navigate('Credits'),
     },
   ];

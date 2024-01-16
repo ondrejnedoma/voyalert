@@ -1,6 +1,7 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import * as fs from "fs";
 
-export default function i18nGetPath() {
+export const i18nGetPath = () => {
   return dirname(fileURLToPath(import.meta.url));
-}
+};

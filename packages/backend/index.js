@@ -2,7 +2,6 @@ import express from "express";
 import { routeCaches } from "./databases.js";
 import {
   requireFieldsMiddleware,
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   subscriptionExistsMiddleware,
@@ -23,7 +22,6 @@ app.get("/ping", (req, res) => {
 app.post(
   "/add",
   requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   subscriptionNotExistsMiddleware,
@@ -41,7 +39,6 @@ app.post(
 app.post(
   "/delete",
   requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
@@ -68,7 +65,6 @@ app.get(
 app.get(
   "/route",
   requireFieldsMiddleware(["dataSource", "voyName"]),
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   async (req, res) => {
@@ -82,7 +78,6 @@ app.get(
 app.get(
   "/getConfig",
   requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
@@ -111,7 +106,6 @@ app.post(
     "field",
     "value",
   ]),
-  voyNameOnlyNumbersMiddleware,
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {

@@ -19,22 +19,14 @@ export const requireFieldsMiddleware = (fields) => {
     if (missingFields.length > 0) {
       return res.json({
         ok: false,
-        error: `Field(s) ${missingFields} are required`,
+        error: req.t("backendErrors.missingFields", {
+          missingFields: missingFields.join(", "),
+          count: missingFields.length,
+        }),
       });
     }
     next();
   };
-};
-
-export const voyNameOnlyNumbersMiddleware = (req, res, next) => {
-  const { voyName } = getReqData(req);
-  if (!/^ *\d+ *( \d+)* *$/.test(voyName)) {
-    return res.json({
-      ok: false,
-      error: "Only numbers allowed for the voyName field",
-    });
-  }
-  next();
 };
 
 export const isDataSourceAcceptedMiddleware = (req, res, next) => {
@@ -43,7 +35,10 @@ export const isDataSourceAcceptedMiddleware = (req, res, next) => {
   if (!acceptedDataSources.includes(dataSource)) {
     return res.json({
       ok: false,
-      error: `"${dataSource}" not accepted for field dataSource. Accepted values are: ${acceptedDataSources}`,
+      error: req.t("backendErrors.dataSourceNotAccepted", {
+        dataSource,
+        acceptedDataSources: acceptedDataSources.join(", "),
+      }),
     });
   }
   next();
@@ -57,7 +52,10 @@ export const isRouteCachedMiddleware = async (req, res, next) => {
   if (!route) {
     return res.json({
       ok: false,
-      error: `The route for voy ${dataSource} ${voyName} is not cached`,
+      error: req.t("backendErrors.routeNotCached", {
+        dataSource,
+        voyName,
+      }),
     });
   }
   next();
@@ -73,7 +71,11 @@ export const subscriptionExistsMiddleware = async (req, res, next) => {
   if (!subscription) {
     return res.json({
       ok: false,
-      error: `Voy ${dataSource} ${voyName} for Firebase token ${firebaseToken} not found`,
+      error: req.t("backendErrors.subscriptionNotFound", {
+        dataSource,
+        voyName,
+        firebaseToken,
+      }),
     });
   }
   next();
@@ -89,7 +91,11 @@ export const subscriptionNotExistsMiddleware = async (req, res, next) => {
   if (subscription) {
     return res.json({
       ok: false,
-      error: `Voy ${dataSource} ${voyName} already exists for Firebase token ${firebaseToken}`,
+      error: req.t("backendErrors.subscriptionAlreadyExists", {
+        dataSource,
+        voyName,
+        firebaseToken,
+      }),
     });
   }
   next();

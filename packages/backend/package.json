@@ -11,6 +11,7 @@
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",
   "dependencies": {
+    "@voyalert/i18n": "latest",
     "cheerio": "^1.0.0-rc.12",
     "date-fns": "^3.2.0",
     "dotenv": "^16.3.1",

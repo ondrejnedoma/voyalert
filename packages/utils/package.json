@@ -1,6 +1,6 @@
 {
   "name": "@voyalert/utils",
-  "version": "0.3",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "get-ip": "node getIp.js",

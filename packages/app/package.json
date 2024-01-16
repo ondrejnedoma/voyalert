@@ -1,6 +1,6 @@
 {
   "name": "@voyalert/app",
-  "version": "0.3",
+  "version": "0.3.0",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -19,6 +19,7 @@
     "@react-native-firebase/messaging": "^18.7.3",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@voyalert/i18n": "^0.3.0",
     "date-fns": "^3.2.0",
     "deepmerge": "^4.3.1",
     "expo": "^50.0.0-preview.10",

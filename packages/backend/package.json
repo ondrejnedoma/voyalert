@@ -1,6 +1,6 @@
 {
   "name": "@voyalert/backend",
-  "version": "0.3",
+  "version": "0.3.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",
   "dependencies": {
-    "@voyalert/i18n": "latest",
+    "@voyalert/i18n": "^0.3.0",
     "cheerio": "^1.0.0-rc.12",
     "date-fns": "^3.2.0",
     "dotenv": "^16.3.1",

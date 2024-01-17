@@ -1,8 +1,8 @@
 {
   "backendErrors": {
-    "missingFields_one": "Field {{missingFields}} is required",
-    "missingFields_other": "Fields {{missingFields}} are required",
-    "dataSourceNotAccepted": "\"{{dataSource}}\" is not an acceptable value for field dataSource. Accepted values are: {{acceptedDataSources}}",
+    "missingFields_one": "Field {{missingFields, list}} is required",
+    "missingFields_other": "Fields {{missingFields, list}} are required",
+    "dataSourceNotAccepted": "\"{{dataSource}}\" is not an acceptable value for field dataSource. Accepted values are: {{acceptedDataSources, list}}",
     "routeNotCached": "The route for voy {{dataSource}} {{voyName}} is not cached",
     "subscriptionNotFound": "Voy {{dataSource}} {{voyName}} for Firebase token {{firebaseToken}} not found",
     "subscriptionAlreadyExists": "Voy {{dataSource}} {{voyName}} already exists for Firebase token {{firebaseToken}}"

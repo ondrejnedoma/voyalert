@@ -20,7 +20,7 @@ export const requireFieldsMiddleware = (fields) => {
       return res.json({
         ok: false,
         error: req.t("backendErrors.missingFields", {
-          missingFields: missingFields.join(", "),
+          missingFields,
           count: missingFields.length,
         }),
       });
@@ -37,7 +37,7 @@ export const isDataSourceAcceptedMiddleware = (req, res, next) => {
       ok: false,
       error: req.t("backendErrors.dataSourceNotAccepted", {
         dataSource,
-        acceptedDataSources: acceptedDataSources.join(", "),
+        acceptedDataSources: acceptedDataSources,
       }),
     });
   }

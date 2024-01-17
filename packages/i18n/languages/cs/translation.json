@@ -1,7 +1,7 @@
 {
   "backendErrors": {
-    "missingFields_one": "Pole {{missingFields}} je vyžadováno",
-    "missingFields_other": "Pole {{missingFields}} jsou vyžadována"
+    "missingFields_one": "Pole {{missingFields, list}} je vyžadováno",
+    "missingFields_other": "Pole {{missingFields, list}} jsou vyžadována"
   },
   "home": {
     "menu": {

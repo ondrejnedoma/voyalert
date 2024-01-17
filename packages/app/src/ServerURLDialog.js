@@ -11,13 +11,15 @@ import {
   TextInput,
   useTheme,
 } from 'react-native-paper';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import apiPing from './api/ApiPing';
+import i18next from 'i18next';
 import ScreenTitle from './components/ScreenTitle';
+import {useTranslation} from 'react-i18next';
 
 export default function ServerURLDialog({visible, setVisible}) {
+  const {t} = useTranslation();
   const [serverType, setServerType] = React.useState('default');
   const [customServerURL, setCustomServerURL] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -43,9 +45,8 @@ export default function ServerURLDialog({visible, setVisible}) {
   };
   React.useEffect(() => {
     const fetchData = async () => {
-      const valueCustomServerURL = await AsyncStorage.getItem(
-        'settings.serverURL',
-      );
+      const valueCustomServerURL =
+        await AsyncStorage.getItem('settings.serverURL');
       if (valueCustomServerURL !== null) {
         setServerType('custom');
         setCustomServerURL(valueCustomServerURL);
@@ -64,31 +65,14 @@ export default function ServerURLDialog({visible, setVisible}) {
             dialog={true}
             withLoading={true}
             loading={loading}>
-            Set Server URL
+            {t('settings.items.serverURL.name')}
           </ScreenTitle>
         </Dialog.Title>
         <Dialog.Content>
           <Text
             style={{marginBottom: 16}}
             variant="bodyMedium">
-            VoyAlert can be set up in a way to use a custom server. This is
-            useful for testing, or if you are self-hosting{' '}
-            <Text
-              style={{
-                textDecorationLine: 'underline',
-                color: theme.colors.primary,
-              }}
-              variant="bodyMedium"
-              onPress={() =>
-                Linking.openURL(
-                  'https://github.com/ondrejnedoma/voyalert-backend',
-                )
-              }>
-              voyalert-backend
-            </Text>{' '}
-            for any reason. If you are not sure what the previous sentence
-            means, it's a wise choice not to touch this setting. Changes won't
-            be saved until "Done" is pressed.
+            {t('settings.items.serverURL.description')}
           </Text>
           <RadioButton.Group
             onValueChange={newServerType => setServerType(newServerType)}
@@ -96,13 +80,13 @@ export default function ServerURLDialog({visible, setVisible}) {
             <RadioButton.Item
               position="leading"
               labelVariant="bodyLarge"
-              label="Use the default server"
+              label={t('settings.items.serverURL.defaultOption')}
               value="default"
             />
             <RadioButton.Item
               position="leading"
               labelVariant="bodyLarge"
-              label="Use a custom server"
+              label={t('settings.items.serverURL.customOption')}
               value="custom"
             />
           </RadioButton.Group>
@@ -115,18 +99,20 @@ export default function ServerURLDialog({visible, setVisible}) {
                   backgroundColor: theme.colors.elevation.level3,
                 }}
                 mode="outlined"
-                label="Server URL"
+                label={t('settings.items.serverURL.customOptionPlaceholder')}
                 value={customServerURL}
                 onChangeText={text => setCustomServerURL(text)}
               />
               <Text variant="bodySmall">
-                The server will be tested by GET /ping
+                {t('settings.items.serverURL.ping')}
               </Text>
             </>
           ) : null}
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={handleOnDonePress}>Done</Button>
+          <Button onPress={handleOnDonePress}>
+            {t('settings.doneButton')}
+          </Button>
         </Dialog.Actions>
       </Dialog>
       <Snackbar
@@ -143,6 +129,6 @@ export async function serverURLState() {
   if (valueCustomServerURL !== null) {
     return valueCustomServerURL;
   } else {
-    return 'Use the default server';
+    return i18next.t('settings.item.serverURL.default');
   }
 }

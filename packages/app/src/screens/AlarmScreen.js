@@ -16,8 +16,10 @@ import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
 
 import SourceLogo from '../components/SourceLogo';
 import {lastAlarmNotificationData} from '../scripts/NotificationHandler';
+import {useTranslation} from 'react-i18next';
 
 export default function AlarmScreen() {
+  const {t} = useTranslation();
   const colorScheme = useColorScheme();
   const {theme} = useMaterial3Theme();
   const themeToApply =
@@ -93,7 +95,7 @@ export default function AlarmScreen() {
           style={{marginHorizontal: 24}}
           onPress={dismiss}
           mode="contained">
-          Dismiss
+          {t('alarm.dismiss')}
         </Button>
       </View>
     </PaperProvider>

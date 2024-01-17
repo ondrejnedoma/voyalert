@@ -1,6 +1,6 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, View} from 'react-native';
-import {ActivityIndicator, Snackbar, Text} from 'react-native-paper';
+import {SafeAreaView, ScrollView} from 'react-native';
+import {Snackbar} from 'react-native-paper';
 
 import {useFocusEffect} from '@react-navigation/native';
 
@@ -9,9 +9,11 @@ import apiGetConfig from '../api/ApiGetConfig';
 import apiRoute from '../api/ApiRoute';
 import OneRouteStop from '../components/OneRouteStop';
 import ScreenTitle from '../components/ScreenTitle';
+import {useTranslation} from 'react-i18next';
 
 export default function ConfigRouteScreen({route}) {
   const {dataSource, voyName} = route.params;
+  const {t} = useTranslation();
   const [stops, setStops] = React.useState();
   const [config, setConfig] = React.useState();
   const [stopConfigDialogVisible, setStopConfigDialogVisible] =
@@ -114,7 +116,7 @@ export default function ConfigRouteScreen({route}) {
       <ScreenTitle
         withLoading={true}
         loading={loading}>
-        Configure stops
+        {t('configRoute.title')}
       </ScreenTitle>
       <ScrollView>
         {stops && config

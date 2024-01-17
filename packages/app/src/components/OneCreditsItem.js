@@ -2,7 +2,7 @@ import React from 'react';
 import {Linking, View} from 'react-native';
 import {Icon, Text, TouchableRipple, useTheme} from 'react-native-paper';
 
-export default function OneCreditsItem({icon, name, link, note}) {
+export default function OneCreditsItem({icon, name, link}) {
   const theme = useTheme();
   return (
     <TouchableRipple onPress={() => Linking.openURL(link)}>
@@ -27,7 +27,6 @@ export default function OneCreditsItem({icon, name, link, note}) {
             variant="titleMedium">
             {name}
           </Text>
-          <Text variant="bodySmall">{note}</Text>
         </View>
       </View>
     </TouchableRipple>

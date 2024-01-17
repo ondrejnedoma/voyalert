@@ -12,38 +12,18 @@ import {
 import DataSourceDialog from '../DataSourceDialog';
 import apiAdd from '../api/ApiAdd';
 import ScreenTitle from '../components/ScreenTitle';
+import {useTranslation} from 'react-i18next';
 
 export default function AddScreen({navigation}) {
+  const {t} = useTranslation();
   const [dataSource, setDataSource] = React.useState('');
   const [voyName, setVoyName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
   const [errorSnackbarText, setErrorSnackbarText] = React.useState('');
-  const dataSourceInfo = [
-    {
-      value: 'sz',
-      name: 'Správa Železnic (GRAPP)',
-      use: 'This data source is applicable for all passenger trains on the Czech soil - grapp.spravazeleznic.cz',
-      pros: ['Works with every carrier (ČD, RJ, LE, Arriva...)'],
-      cons: [
-        'Alerts only at railway stations with dispatchers',
-        'Alerts will be around 2-3 minutes delayed',
-      ],
-      hint: 'Enter the train number without the train type - 11085',
-      disabled: false,
-    },
-    {
-      value: 'idsok',
-      name: 'IDSOK (CestujOK)',
-      use: 'This data source is applicable for all vehicles in the IDSOK system - cestujok.cz',
-      pros: [
-        'Based on real-time vehicle position - alerts should arrive on time',
-      ],
-      cons: ["Can't be set to alert about arrivals"],
-      hint: 'Enter the connection name exactly as it appears on CestujOK, without letters - 890302 39, 14018',
-      disabled: false,
-    },
-  ];
+  const dataSourceList = t('add.dataSourceList', {returnObjects: true});
+  const dataSourceValues = Object.keys(dataSourceList);
+  const dataSourceInfo = Object.values(dataSourceList);
   const [dataSourceDialogVisible, setDataSourceDialogVisible] =
     React.useState(false);
   const [dataSourceDialogContent, setDataSourceDialogContent] = React.useState({
@@ -81,26 +61,25 @@ export default function AddScreen({navigation}) {
         <Text
           style={{marginBottom: 4}}
           variant="titleMedium">
-          Data source:
+          {t('add.dataSource')}
         </Text>
         <Text
           style={{marginBottom: 4}}
           variant="bodySmall">
-          Long press on individual data sources for details. More data sources
-          coming soon.
+          {t('add.dataSourceHint')}
         </Text>
       </View>
       <RadioButton.Group
         onValueChange={newDataSource => setDataSource(newDataSource)}
         value={dataSource}>
-        {dataSourceInfo.map(el => (
+        {dataSourceInfo.map((el, i) => (
           <RadioButton.Item
-            key={el.value}
+            key={dataSourceValues[i]}
             style={{paddingHorizontal: 24}}
             position="leading"
             labelVariant="bodyLarge"
             label={el.name}
-            value={el.value}
+            value={dataSourceValues[i]}
             disabled={el.disabled}
             onLongPress={() => handleLongPressDataSource(el.value)}
           />
@@ -116,14 +95,14 @@ export default function AddScreen({navigation}) {
           style={{marginVertical: 16}}
           mode="outlined"
           disabled={loading || !dataSource}
-          label="Name/number/line"
+          label={t('add.namePlaceholder')}
           value={voyName}
           onChangeText={text => setVoyName(text)}
         />
         <Text
           style={{marginBottom: 16}}
           variant="bodySmall">
-          After adding the voy, press it from the home screen to configure it.
+          {t('add.voyConfigHint')}
         </Text>
         <Button
           style={{alignSelf: 'flex-end'}}
@@ -131,7 +110,7 @@ export default function AddScreen({navigation}) {
           mode="contained"
           disabled={loading || !dataSource}
           onPress={handleAdd}>
-          Finish
+          {t('add.addButton')}
         </Button>
       </View>
       <Snackbar

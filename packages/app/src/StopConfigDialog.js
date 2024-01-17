@@ -1,8 +1,8 @@
 import React from 'react';
-import {View} from 'react-native';
-import {Button, Checkbox, Dialog, Portal} from 'react-native-paper';
+import {Checkbox, Dialog, Portal} from 'react-native-paper';
 
 import apiSetConfigForStop from './api/ApiSetConfigForStop';
+import {useTranslation} from 'react-i18next';
 
 export default function StopConfigDialog({
   visible,
@@ -15,6 +15,7 @@ export default function StopConfigDialog({
   setShowErrorSnackbar,
   setErrorSnackbarText,
 }) {
+  const {t} = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [stopConfig, setStopConfig] = React.useState(config);
   React.useEffect(() => {
@@ -48,7 +49,7 @@ export default function StopConfigDialog({
         <Dialog.Title>{stopName}</Dialog.Title>
         <Dialog.Content>
           <Checkbox.Item
-            label="Notification at arrival"
+            label={t('configRoute.notifyArrival')}
             status={stopConfig.notifyArrival ? 'checked' : 'unchecked'}
             onPress={() =>
               onConfigSet('notifyArrival', !stopConfig.notifyArrival)
@@ -59,7 +60,7 @@ export default function StopConfigDialog({
           />
           <Checkbox.Item
             labelStyle={{paddingHorizontal: 24}}
-            label="Alarm at arrival"
+            label={t('configRoute.alarmArrival')}
             status={stopConfig.alarmArrival ? 'checked' : 'unchecked'}
             onPress={() =>
               onConfigSet('alarmArrival', !stopConfig.alarmArrival)
@@ -69,7 +70,7 @@ export default function StopConfigDialog({
             }
           />
           <Checkbox.Item
-            label="Notification at departure"
+            label={t('configRoute.notifyDeparture')}
             status={stopConfig.notifyDeparture ? 'checked' : 'unchecked'}
             onPress={() =>
               onConfigSet('notifyDeparture', !stopConfig.notifyDeparture)
@@ -82,7 +83,7 @@ export default function StopConfigDialog({
           />
           <Checkbox.Item
             labelStyle={{paddingHorizontal: 24}}
-            label="Alarm at departure"
+            label={t('configRoute.alarmDeparture')}
             status={stopConfig.alarmDeparture ? 'checked' : 'unchecked'}
             onPress={() =>
               onConfigSet('alarmDeparture', !stopConfig.alarmDeparture)

@@ -6,9 +6,10 @@ import notifee from '@notifee/react-native';
 
 import apiDelete from '../api/ApiDelete';
 import ScreenTitle from '../components/ScreenTitle';
-import SourceLogo from '../components/SourceLogo';
+import {useTranslation} from 'react-i18next';
 
 export default function ConfigScreen({route, navigation}) {
+  const {t} = useTranslation();
   const {dataSource, voyName} = route.params;
   const [loading, setLoading] = React.useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = React.useState(false);
@@ -46,7 +47,7 @@ export default function ConfigScreen({route, navigation}) {
         {voyName}
       </ScreenTitle>
       <View style={{marginHorizontal: 24}}>
-        <Text variant="titleMedium">Stops to alert at:</Text>
+        <Text variant="titleMedium">{t('config.stopsToAlertAt')}</Text>
         <Button
           style={{alignSelf: 'flex-start', marginTop: 8}}
           icon="timeline-alert"
@@ -54,7 +55,7 @@ export default function ConfigScreen({route, navigation}) {
           onPress={() =>
             navigation.navigate('ConfigRoute', {dataSource, voyName})
           }>
-          Select stops
+          {t('config.selectStopsButton')}
         </Button>
       </View>
       <Snackbar

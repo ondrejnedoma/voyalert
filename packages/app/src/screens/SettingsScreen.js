@@ -1,19 +1,19 @@
 import React from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import ServerURLDialog, {serverURLState} from '../ServerURLDialog';
 import OneSettingsItem from '../components/OneSettingsItem';
 import ScreenTitle from '../components/ScreenTitle';
+import {useTranslation} from 'react-i18next';
 
 export default function SettingsScreen() {
+  const {t} = useTranslation();
   const [serverURLDialogVisible, setServerURLDialogVisible] =
     React.useState(false);
   const [settingsItems, setSettingsItems] = React.useState([
     {
       icon: 'server',
-      name: 'Set server URL',
+      name: t('settings.items.serverURL.name'),
       stateFunction: serverURLState,
       onPress: () => setServerURLDialogVisible(true),
     },
@@ -33,7 +33,7 @@ export default function SettingsScreen() {
   }, [serverURLDialogVisible]);
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle>Settings</ScreenTitle>
+      <ScreenTitle>{t('settings.title')}</ScreenTitle>
       <ScrollView>
         {settingsItems.map(el => (
           <OneSettingsItem

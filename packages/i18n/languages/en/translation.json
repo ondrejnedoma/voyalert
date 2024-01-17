@@ -14,5 +14,85 @@
       "reportBug": "Report a bug 🪲",
       "credits": "Credits 🏆"
     }
+  },
+  "add": {
+    "title": "Add Voy",
+    "dataSource": "Data source",
+    "dataSourceHint": "Long press on individual data sources for details",
+    "dataSourceList": {
+      "sz": {
+        "name": "Správa Železnic (GRAPP)",
+        "use": "This data source is applicable for all passenger trains on the Czech soil - grapp.spravazeleznic.cz",
+        "pros": ["Works with every train carrier (ČD, RJ, LE, Arriva...)"],
+        "cons": [
+          "Alerts only at railway stations with dispatchers",
+          "Alerts will be around 2-3 minutes delayed"
+        ],
+        "hint": "Enter the train number without the train type - 11085"
+      },
+      "idsok": {
+        "value": "idsok",
+        "name": "IDSOK (CestujOK)",
+        "use": "This data source is applicable for all vehicles in the IDSOK system - cestujok.cz",
+        "pros": [
+          "Based on real-time vehicle position - alerts should arrive on time"
+        ],
+        "cons": ["Can't be set to alert about arrivals"],
+        "hint": "Enter the connection name exactly as it appears on CestujOK, without letters - 890302 39, 14018"
+      }
+    },
+    "namePlaceholder": "Name/number/line",
+    "voyConfigHint": "Press the Voy from the home screen after adding it to configure it",
+    "addButton": "Add"
+  },
+  "config": {
+    "stopsToAlertAt": "Stops to alert at",
+    "selectStopsButton": "Select stops"
+  },
+  "configRoute": {
+    "title": "Configure stops",
+    "notifyArrival": "Notification on arrival",
+    "alarmArrival": "Alarm on arrival",
+    "notifyDeparture": "Notification on departure",
+    "alarmDeparture": "Alarm on departure"
+  },
+  "alarm": {
+    "dismiss": "Dismiss"
+  },
+  "settings": {
+    "title": "Settings",
+    "doneButton": "Done",
+    "items": {
+      "serverURL": {
+        "name": "Set server URL",
+        "default": "Use the default server",
+        "description": "VoyAlert can be set up in a way to use a custom server. This is useful for testing, or if you are self-hosting @voyalert/backend for any reason. If you are not sure what the previous sentence means, it's a wise choice not to touch this setting. Changes won't be saved until \"Done\" is pressed.",
+        "defaultOption": "Use the default server",
+        "customOption": "Use a custom server",
+        "customOptionPlaceholder": "Server URL",
+        "ping": "The server will be tested by GET /ping"
+      }
+    }
+  },
+  "donate": {
+    "title": "Donate to VoyAlert",
+    "beforeDonate": "Before you donate, read this",
+    "donateTextPart1": "The VoyAlert app and all of its components are completely ",
+    "openSource": "open-source",
+    "donateTextPart2": ". I am a high school student and my top priority for this app is for it to feel modern, snappy and easily usable, not to make millions from ads, in-app purchases or from making this a paid app like most big corporations would. In my opinion, donations are the least invasive form of monetization. If you like my work and can afford to donate, a donation would be greatly appreciated. The money received from these donations will be primarily used to keep the backend server running, pay for the yearly charge for a domain name and to cover any other expenses related to VoyAlert. Secondarily, coffee. ☕",
+    "donationChannels": "Donation channels",
+    "donationChannelsHint": "Click on any channel to copy its address/number",
+    "items": {
+      "bankAccountCz": "Czech bank account number",
+      "bankAccountIBAN": "IBAN (BIC: GIBACZPX)",
+      "btc": "BTC",
+      "eth": "ETH and all EVM-compatible blockchains",
+      "ltc": "LTC"
+    }
+  },
+  "credits": {
+    "title": "Credits",
+    "creditsText": "If you wish to be credited too, ",
+    "openIssue": "open an issue on GitHub"
   }
 }

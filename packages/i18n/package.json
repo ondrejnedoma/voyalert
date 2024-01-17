@@ -1,0 +1,13 @@
+{
+  "name": "@voyalert/i18n",
+  "version": "0.3.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "ondrejnedoma",
+  "license": "AGPL-3.0",
+  "dependencies": {
+  }
+}

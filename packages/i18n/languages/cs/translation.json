@@ -1,0 +1,14 @@
+{
+  "backendErrors": {
+    "missingFields_one": "Pole {{missingFields, list}} je vyžadováno",
+    "missingFields_other": "Pole {{missingFields, list}} jsou vyžadována"
+  },
+  "home": {
+    "menu": {
+      "settings": "Nastavení ⚙️",
+      "donate": "Přispět 💸",
+      "reportBug": "Nahlásit bug 🪲",
+      "credits": "Poděkování 🏆"
+    }
+  }
+}

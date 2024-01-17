@@ -1,0 +1,16 @@
+{
+  "name": "@voyalert/utils",
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "get-ip": "node getIp.js",
+    "setup-modules": "node reinstallModules.js",
+    "gradlew-clean": "node gradlewClean.js"
+  },
+  "author": "ondrejnedoma",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ip": "^1.1.8"
+  }
+}

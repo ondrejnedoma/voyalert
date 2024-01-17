@@ -1,0 +1,29 @@
+{
+  "name": "@voyalert/backend",
+  "version": "0.3.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon -V index.js",
+    "build": "docker build . -t voyalertbackend",
+    "save": "docker save voyalertbackend -o voyalertbackend.tar"
+  },
+  "author": "ondrejnedoma",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "@voyalert/i18n": "^0.3.0",
+    "cheerio": "^1.0.0-rc.12",
+    "date-fns": "^3.2.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "i18next": "^23.7.16",
+    "i18next-http-middleware": "^3.5.0",
+    "mongoose": "^8.0.4",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

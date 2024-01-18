@@ -17,7 +17,9 @@
     "utils:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "concurrently": "^8.2.2",
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "prettier": "^3.2.2"
   }
 }

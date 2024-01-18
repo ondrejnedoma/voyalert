@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "patch-package && npm run i18n",
+    "postinstall": "patch-package && npm run i18n && husky install",
     "app:dev": "npm run dev --workspace @voyalert/app",
     "app:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils",
     "app:build": "npm run build --workspace @voyalert/app",
@@ -17,14 +17,13 @@
     "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
     "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils"
   },
-  "pre-commit": [
-    "backend:docker-compose-tag"
-  ],
   "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
     "patch-package": "^8.0.0",
-    "pre-commit": "^1.2.2",
     "prettier": "^3.2.2"
   }
 }

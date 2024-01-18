@@ -1,11 +1,5 @@
-# Backend's database folder
-db/*
-
-# Backend's saved docker image tar
-voyalertbackend.tar
-
 # Environmental variables
 .env
 
 # Firebase admin credentials
-*-firebase.json
+firebase.json

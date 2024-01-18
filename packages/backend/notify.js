@@ -3,7 +3,7 @@ import {getMessaging} from 'firebase-admin/messaging';
 import serviceAccount from './firebase.json' assert {type: 'json'};
 
 console.log(
-  'Initializing Firebase with serviceAccount with client_id: ' +
+  'Initializing Firebase with serviceAccount.client_id: ' +
     serviceAccount.client_id,
 );
 

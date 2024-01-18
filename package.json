@@ -6,20 +6,25 @@
   ],
   "scripts": {
     "postinstall": "patch-package && npm run i18n",
-    "app:start": "npm run start --workspace @voyalert/app",
-    "backend:start": "npm run start --workspace @voyalert/backend",
+    "app:dev": "npm run dev --workspace @voyalert/app",
+    "app:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils",
     "app:build": "npm run build --workspace @voyalert/app",
+    "backend:dev": "npm run dev --workspace @voyalert/backend",
     "backend:build": "npm run build --workspace @voyalert/backend",
+    "backend:docker-compose-tag": "npm run docker-compose-tag --workspace @voyalert/backend",
     "build": "npm run app:build && npm run backend:build",
     "i18n": "npm run start --workspace @voyalert/i18n",
     "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
-    "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils",
-    "utils:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils"
+    "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils"
   },
+  "pre-commit": [
+    "backend:docker-compose-tag"
+  ],
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "concurrently": "^8.2.2",
     "patch-package": "^8.0.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^3.2.2"
   }
 }

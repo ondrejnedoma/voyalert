@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "get-ip": "node getIp.js",
-    "setup-modules": "node reinstallModules.js",
-    "gradlew-clean": "node gradlewClean.js"
+    "setup-modules": "node reinstallModules.js"
   },
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",

@@ -1,0 +1,38 @@
+name: Publish voyalert/backend to Docker Hub
+
+on: workflow_dispatch
+
+env:
+  DOCKER_USER: ${{secrets.DOCKER_USER}}
+  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+jobs:
+  publish-voyalert-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare package.json version to Docker Hub tag
+        id: version-check
+        run: |
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          echo "Package version is $PACKAGE_VERSION"
+
+          DOCKER_HUB_TAG=$(curl -s "https://hub.docker.com/v2/repositories/voyalert/backend/tags/" | jq -r 'results[0].name')
+          echo "Last Docker Hub tag is $DOCKER_HUB_TAG"
+
+          if [ "$DOCKER_HUB_TAG" == "$PACKAGE_VERSION" ]; then
+            echo "Latest tag on Docker Hub matches the version in package.json"
+          else
+            echo "Latest tag on Docker Hub does not match the version in package.json"
+            echo "::set-output name=build::true"
+          fi
+      - name: Build and push to Docker Hub
+        id: build-and-push
+        if: steps.version-check.build == 'true'
+        run: |
+          echo "Building Docker image with tag: $PACKAGE_VERSION"
+          docker build -t voyalert/backend:$PACKAGE_VERSION .
+          echo "Build finished"
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "Logged in to Docker Hub"
+          docker push voyalert/backend:$PACKAGE_VERSION
+          echo "Pushed image to Docker Hub"

@@ -1,8 +1,9 @@
 # VoyAlert
 
-<a href="https://hosted.weblate.org/engage/voyalert/">
-<img src="https://hosted.weblate.org/widget/voyalert/translation/svg-badge.svg" alt="Translation status badge" />
-</a>
+![Version](https://img.shields.io/github/package-json/v/ondrejnedoma/voyalert/master?label=version&color=6AD826)
+![License](https://img.shields.io/github/license/ondrejnedoma/voyalert?color=6AD826)
+[![Translated](https://hosted.weblate.org/widget/voyalert/translation/svg-badge.svg)](https://hosted.weblate.org/engage/voyalert/)
+![Stars](https://img.shields.io/github/stars/ondrejnedoma/voyalert?style=flat)
 
 An app that alerts you (by push notification or a persistent alarm) \
 upon the arrival or departure of a public transport vehicle from a stop

@@ -6,33 +6,52 @@ env:
   DOCKER_USER: ${{secrets.DOCKER_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
 jobs:
-  publish-voyalert-backend:
+  evaluate-version:
     runs-on: ubuntu-latest
+    outputs:
+      evaluated: ${{ steps.compare-versions.outputs.evaluated }}
     steps:
       - uses: actions/checkout@v4
-      - name: Compare package.json version to Docker Hub tag
-        id: version-check
+      - name: Get package.json version
+        id: get-version-package-json
         run: |
-          PACKAGE_VERSION=$(jq -r .version package.json)
-          echo "Package version is $PACKAGE_VERSION"
-
-          DOCKER_HUB_TAG=$(curl -s "https://hub.docker.com/v2/repositories/voyalert/backend/tags/" | jq -r 'results[0].name')
-          echo "Last Docker Hub tag is $DOCKER_HUB_TAG"
-
-          if [ "$DOCKER_HUB_TAG" == "$PACKAGE_VERSION" ]; then
+          PACKAGE_JSON_VERSION=$(jq -r .version packages/backend/package.json)
+          echo "Current package.json version is $PACKAGE_JSON_VERSION"
+          echo "result=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Get Docker Hub tag
+        id: get-tag-docker-hub
+        run: |
+          DOCKER_HUB_TAG=$(curl -s "https://hub.docker.com/v2/repositories/ondrejnedoma/voyalert-backend/tags/" | jq -r 'if has("results") and (.results | length > 0) then .results[0].name else "0" end')
+          echo "Latest Docker Hub tag is $DOCKER_HUB_TAG"
+          echo "result=$DOCKER_HUB_TAG" >> "$GITHUB_OUTPUT"
+      - name: Compare the package.json version and Docker Hub tag
+        id: compare-versions
+        env:
+          PACKAGE_JSON_VERSION: ${{ steps.get-version-package-json.outputs.result }}
+          DOCKER_HUB_TAG: ${{ steps.get-tag-docker-hub.outputs.result }}
+        run: |
+          if [ "$DOCKER_HUB_TAG" == "$PACKAGE_JSON_VERSION" ]; then
             echo "Latest tag on Docker Hub matches the version in package.json"
+            echo "evaluated=false" >> "$GITHUB_OUTPUT"
           else
-            echo "Latest tag on Docker Hub does not match the version in package.json"
-            echo "::set-output name=build::true"
+            echo "Latest tag on Docker Hub does not match the version in package.json, will build and push image to Docker Hub"
+            echo "evaluated=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
           fi
+  publish:
+    runs-on: ubuntu-latest
+    needs: evaluate-version
+    env:
+      VERSION: ${{ needs.evaluate-version.outputs.evaluated }}
+    if: ${{ needs.evaluate-version.outputs.evaluated != 'false' }}
+    steps:
+      - uses: actions/checkout@v4
       - name: Build and push to Docker Hub
         id: build-and-push
-        if: steps.version-check.build == 'true'
         run: |
-          echo "Building Docker image with tag: $PACKAGE_VERSION"
-          docker build -t voyalert/backend:$PACKAGE_VERSION .
+          echo "Building Docker image with tag: $VERSION"
+          docker build -t ondrejnedoma/voyalert-backend:$VERSION ./packages/backend
           echo "Build finished"
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
           echo "Logged in to Docker Hub"
-          docker push voyalert/backend:$PACKAGE_VERSION
+          docker push ondrejnedoma/voyalert-backend:$VERSION
           echo "Pushed image to Docker Hub"

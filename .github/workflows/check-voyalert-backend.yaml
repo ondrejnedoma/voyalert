@@ -1,10 +1,13 @@
-name: Publish voyalert/backend to Docker Hub
+name: voyalert/backend => Docker Hub
 
-on: workflow_dispatch
+on:
+  push:
+    branches: ['master']
+  workflow_dispatch:
 
 env:
-  DOCKER_USER: ${{secrets.DOCKER_USER}}
-  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
   evaluate-version:
     runs-on: ubuntu-latest
@@ -37,7 +40,7 @@ jobs:
             echo "Latest tag on Docker Hub does not match the version in package.json, will build and push image to Docker Hub"
             echo "evaluated=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
           fi
-  publish:
+  push:
     runs-on: ubuntu-latest
     needs: evaluate-version
     env:
@@ -45,13 +48,18 @@ jobs:
     if: ${{ needs.evaluate-version.outputs.evaluated != 'false' }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build and push to Docker Hub
-        id: build-and-push
+      - name: Build the Docker image
+        id: docker-build
         run: |
           echo "Building Docker image with tag: $VERSION"
           docker build -t ondrejnedoma/voyalert-backend:$VERSION ./packages/backend
-          echo "Build finished"
+      - name: Log in to Docker Hub
+        id: docker-login
+        run: |
+          echo "logging in to Docker Hub"
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-          echo "Logged in to Docker Hub"
+      - name: Push the image to Docker Hub
+        id: docker-push
+        run: |
           docker push ondrejnedoma/voyalert-backend:$VERSION
           echo "Pushed image to Docker Hub"

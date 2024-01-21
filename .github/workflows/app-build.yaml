@@ -28,7 +28,7 @@ jobs:
       - name: Get GitHub releases version
         id: get-version-github-releases
         run: |
-          GITHUB_VERSION=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/releases" | jq -r 'if has("[0]") then .[0].name else "0" end')
+          GITHUB_VERSION=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/releases" | jq -r 'if length > 0 then .[0].name else "0" end')
           echo "Latest GitHub release version is $GITHUB_VERSION"
           echo "result=$GITHUB_VERSION" >> "$GITHUB_OUTPUT"
       - name: Compare package.json version and GitHub tag

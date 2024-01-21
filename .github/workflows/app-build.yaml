@@ -1,0 +1,111 @@
+name: BUILD app => APK, AAB => GitHub releases
+
+on:
+  push:
+    branches: ['master']
+  workflow_dispatch:
+
+env:
+  VOYALERT_UPLOAD_STORE_BASE64: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
+  VOYALERT_UPLOAD_KEY_ALIAS: ${{ secrets.VOYALERT_UPLOAD_KEY_ALIAS }}
+  VOYALERT_UPLOAD_STORE_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_STORE_PASSWORD }}
+  VOYALERT_UPLOAD_KEY_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_KEY_PASSWORD }}
+jobs:
+  evaluate-version-gh:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.compare-versions.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get package.json version
+        id: get-version-package-json
+        run: |
+          PACKAGE_JSON_VERSION=$(jq -r .version packages/app/package.json)
+          echo "Current package.json version is $PACKAGE_JSON_VERSION"
+          echo "result=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Get GitHub tag
+        id: get-tag-github
+        run: |
+          GITHUB_TAG=$(curl -s "https://api.github.com/repos/ondrejnedoma/VoyAlert/tags/" | jq -r 'if has("[0]") then .[0].name else "0" end')
+          echo "Latest GitHub tag is $GITHUB_TAG"
+          echo "result=$GITHUB_TAG" >> "$GITHUB_OUTPUT"
+      - name: Compare package.json version and GitHub tag
+        id: compare-versions
+        env:
+          PACKAGE_JSON_VERSION: ${{ steps.get-version-package-json.outputs.result }}
+          GITHUB_TAG: ${{ steps.get-tag-github.outputs.result }}
+        run: |
+          if [ "$GITHUB_TAG" == "$PACKAGE_JSON_VERSION" ]; then
+            echo "Latest tag on GitHub matches version in package.json"
+            echo "version=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Latest tag on GitHub does not match version in package.json, will build and make GitHub release"
+            echo "version=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
+          fi
+  build:
+    runs-on: ubuntu-latest
+    needs: evaluate-version-gh
+    env:
+      VERSION: ${{ needs.evaluate-version-gh.outputs.version }}
+    if: ${{ needs.evaluate-version-gh.outputs.version != 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Configure signing
+        run: |
+          cd packages/app/android
+          echo $VOYALERT_UPLOAD_STORE_BASE64
+          echo $VOYALERT_UPLOAD_STORE_BASE64 | base64 -d > voyalert.keystore
+          echo VOYALERT_UPLOAD_STORE_FILE=voyalert.keystore >> gradle.properties
+          echo VOYALERT_UPLOAD_KEY_ALIAS=$VOYALERT_UPLOAD_KEY_ALIAS >> gradle.properties
+          echo VOYALERT_UPLOAD_STORE_PASSWORD=$VOYALERT_UPLOAD_STORE_PASSWORD >> gradle.properties
+          echo VOYALERT_UPLOAD_KEY_PASSWORD=$VOYALERT_UPLOAD_KEY_PASSWORD >> gradle.properties
+      - name: Build APK
+        run: |
+          cd packages/app/android
+          chmod +x gradlew
+          ./gradlew assembleRelease -Punsigned
+      - name: Artifact APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: packages/app/android/app/build/outputs/apk/release/*.apk
+      - name: Build AAB
+        run: |
+          cd packages/app/android
+          chmod +x gradlew
+          ./gradlew bundleRelease -Punsigned
+      - name: Artifact AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: packages/app/android/app/build/outputs/bundle/release/app-release.aab
+  push-gh:
+    runs-on: ubuntu-latest
+    needs:
+      - evaluate-version-gh
+      - build
+    env:
+      VERSION: ${{ needs.evaluate-version-gh.outputs.version }}
+    if: ${{ needs.evaluate-version-gh.outputs.version != 'false' }}
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: apk
+      - name: 'Create GitHub release'
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: '*.apk'
+          tag: $VERSION

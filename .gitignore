@@ -3,3 +3,6 @@ node_modules
 
 # i18n resources merged into individual packages
 i18n-resources.json
+
+# Secrets for act
+*.secrets

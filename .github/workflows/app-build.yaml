@@ -28,7 +28,7 @@ jobs:
       - name: Get GitHub tag
         id: get-tag-github
         run: |
-          GITHUB_TAG=$(curl -s "https://api.github.com/repos/ondrejnedoma/VoyAlert/tags/" | jq -r 'if has("[0]") then .[0].name else "0" end')
+          GITHUB_TAG=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/tags/" | jq -r 'if has("[0]") then .[0].name else "0" end')
           echo "Latest GitHub tag is $GITHUB_TAG"
           echo "result=$GITHUB_TAG" >> "$GITHUB_OUTPUT"
       - name: Compare package.json version and GitHub tag

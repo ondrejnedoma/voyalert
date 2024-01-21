@@ -77,6 +77,8 @@ jobs:
       - name: Build APK
         run: |
           cd packages/app/android
+          pwd
+          ls
           chmod +x gradlew
           ./gradlew assembleRelease
       - name: Artifact APK

@@ -65,12 +65,12 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'voyalert.keystore'
-          fileDir: 'packages/app/android'
+          fileDir: 'packages/app/android/app'
           encodedString: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
       - name: Configure signing vars
         run: |
           cd packages/app/android
-          echo VOYALERT_UPLOAD_STORE_FILE=./voyalert.keystore >> gradle.properties
+          echo VOYALERT_UPLOAD_STORE_FILE=voyalert.keystore >> gradle.properties
           echo VOYALERT_UPLOAD_KEY_ALIAS=$VOYALERT_UPLOAD_KEY_ALIAS >> gradle.properties
           echo VOYALERT_UPLOAD_STORE_PASSWORD=$VOYALERT_UPLOAD_STORE_PASSWORD >> gradle.properties
           echo VOYALERT_UPLOAD_KEY_PASSWORD=$VOYALERT_UPLOAD_KEY_PASSWORD >> gradle.properties

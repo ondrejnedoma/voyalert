@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 env:
-  VOYALERT_UPLOAD_STORE_BASE64: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
   VOYALERT_UPLOAD_KEY_ALIAS: ${{ secrets.VOYALERT_UPLOAD_KEY_ALIAS }}
   VOYALERT_UPLOAD_STORE_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_STORE_PASSWORD }}
   VOYALERT_UPLOAD_KEY_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_KEY_PASSWORD }}
@@ -62,11 +61,15 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-      - name: Configure signing
+      - name: Decode keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'voyalert.keystore'
+          fileDir: 'packages/app/android'
+          encodedString: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
+      - name: Configure signing vars
         run: |
           cd packages/app/android
-          echo $VOYALERT_UPLOAD_STORE_BASE64
-          echo $VOYALERT_UPLOAD_STORE_BASE64 | base64 -d > voyalert.keystore
           echo VOYALERT_UPLOAD_STORE_FILE=voyalert.keystore >> gradle.properties
           echo VOYALERT_UPLOAD_KEY_ALIAS=$VOYALERT_UPLOAD_KEY_ALIAS >> gradle.properties
           echo VOYALERT_UPLOAD_STORE_PASSWORD=$VOYALERT_UPLOAD_STORE_PASSWORD >> gradle.properties

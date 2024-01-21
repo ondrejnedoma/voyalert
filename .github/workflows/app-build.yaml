@@ -25,23 +25,23 @@ jobs:
           PACKAGE_JSON_VERSION=$(jq -r .version packages/app/package.json)
           echo "Current package.json version is $PACKAGE_JSON_VERSION"
           echo "result=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
-      - name: Get GitHub tag
-        id: get-tag-github
+      - name: Get GitHub releases version
+        id: get-version-github-releases
         run: |
-          GITHUB_TAG=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/tags/" | jq -r 'if has("[0]") then .[0].name else "0" end')
-          echo "Latest GitHub tag is $GITHUB_TAG"
-          echo "result=$GITHUB_TAG" >> "$GITHUB_OUTPUT"
+          GITHUB_VERSION=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/releases/" | jq -r 'if has("[0]") then .[0].name else "0" end')
+          echo "Latest GitHub release version is $GITHUB_VERSION"
+          echo "result=$GITHUB_VERSION" >> "$GITHUB_OUTPUT"
       - name: Compare package.json version and GitHub tag
         id: compare-versions
         env:
           PACKAGE_JSON_VERSION: ${{ steps.get-version-package-json.outputs.result }}
-          GITHUB_TAG: ${{ steps.get-tag-github.outputs.result }}
+          GITHUB_VERSION: ${{ steps.get-version-github-releases.outputs.result }}
         run: |
-          if [ "$GITHUB_TAG" == "$PACKAGE_JSON_VERSION" ]; then
-            echo "Latest tag on GitHub matches version in package.json"
+          if [ "$GITHUB_VERSION" == "$PACKAGE_JSON_VERSION" ]; then
+            echo "Latest version on GitHub releases matches version in package.json"
             echo "version=false" >> "$GITHUB_OUTPUT"
           else
-            echo "Latest tag on GitHub does not match version in package.json, will build and make GitHub release"
+            echo "Latest version on GitHub releases does not match version in package.json, will build and make GitHub release"
             echo "version=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
           fi
   build:

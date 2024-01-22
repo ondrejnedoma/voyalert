@@ -45,7 +45,8 @@ jobs:
       VERSION: ${{ needs.evaluate-version-gh.outputs.version }}
     if: ${{ needs.evaluate-version-gh.outputs.version != 'false' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 18

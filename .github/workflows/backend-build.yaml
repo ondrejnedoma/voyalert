@@ -5,9 +5,6 @@ on:
     branches: ['master']
   workflow_dispatch:
 
-env:
-  DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
   evaluate-version:
     runs-on: ubuntu-latest
@@ -37,24 +34,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: evaluate-version
-    env:
-      VERSION: ${{ needs.evaluate-version.outputs.version }}
     if: ${{ needs.evaluate-version.outputs.version != 'false' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build the Docker image
-        id: docker-build
-        run: |
-          echo "Building Docker image with tag: $VERSION"
-          docker build -t ondrejnedoma/voyalert-backend:$VERSION ./packages/backend
-      - name: Log in to Docker Hub
-        id: docker-login
-        run: |
-          echo "logging in to Docker Hub"
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-      - name: Push the image to Docker Hub
-        id: docker-push
-        run: |
-          docker push ondrejnedoma/voyalert-backend:$VERSION
-          echo "Pushed image to Docker Hub"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ondrejnedoma/voyalert-backend:${{ needs.evaluate-version.outputs.version }}

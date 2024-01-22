@@ -59,7 +59,7 @@ jobs:
         run: |
           cd packages/app/android
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease -Punsigned
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         with:

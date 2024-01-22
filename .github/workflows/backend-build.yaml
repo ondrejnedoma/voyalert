@@ -15,24 +15,17 @@ jobs:
       version: ${{ steps.compare-versions.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - name: Get package.json version
-        id: get-version-package-json
-        run: |
-          PACKAGE_JSON_VERSION=$(jq -r .version packages/backend/package.json)
-          echo "Current package.json version is $PACKAGE_JSON_VERSION"
-          echo "result=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
-      - name: Get Docker Hub tag
-        id: get-tag-docker-hub
-        run: |
-          DOCKER_HUB_TAG=$(curl -s "https://hub.docker.com/v2/repositories/ondrejnedoma/voyalert-backend/tags/" | jq -r 'if has("results") and (.results | length > 0) then .results[0].name else "0" end')
-          echo "Latest Docker Hub tag is $DOCKER_HUB_TAG"
-          echo "result=$DOCKER_HUB_TAG" >> "$GITHUB_OUTPUT"
-      - name: Compare package.json version and Docker Hub tag
+      - name: Ger package.json version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: packages/backend
+      - name: Compare package.json version and latest Docker Hub tag
         id: compare-versions
         env:
-          PACKAGE_JSON_VERSION: ${{ steps.get-version-package-json.outputs.result }}
-          DOCKER_HUB_TAG: ${{ steps.get-tag-docker-hub.outputs.result }}
+          PACKAGE_JSON_VERSION: ${{ steps.package-version.outputs.current-version }}
         run: |
+          DOCKER_HUB_TAG=$(curl -s "https://hub.docker.com/v2/repositories/ondrejnedoma/voyalert-backend/tags/" | jq -r 'if has("results") and (.results | length > 0) then .results[0].name else "0" end')
           if [ "$DOCKER_HUB_TAG" == "$PACKAGE_JSON_VERSION" ]; then
             echo "Latest tag on Docker Hub matches version in package.json"
             echo "version=false" >> "$GITHUB_OUTPUT"
@@ -40,7 +33,7 @@ jobs:
             echo "Latest tag on Docker Hub does not match version in package.json, will build and push image to Docker Hub"
             echo "version=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
           fi
-  push:
+  build:
     runs-on: ubuntu-latest
     needs: evaluate-version
     env:

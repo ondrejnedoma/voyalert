@@ -18,25 +18,19 @@ jobs:
     outputs:
       version: ${{ steps.compare-versions.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Get package.json version
-        id: get-version-package-json
-        run: |
-          PACKAGE_JSON_VERSION=$(jq -r .version packages/app/package.json)
-          echo "Current package.json version is $PACKAGE_JSON_VERSION"
-          echo "result=$PACKAGE_JSON_VERSION" >> "$GITHUB_OUTPUT"
-      - name: Get GitHub releases version
-        id: get-version-github-releases
-        run: |
-          GITHUB_VERSION=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/releases" | jq -r 'if length > 0 then .[0].name else "0" end')
-          echo "Latest GitHub release version is $GITHUB_VERSION"
-          echo "result=$GITHUB_VERSION" >> "$GITHUB_OUTPUT"
-      - name: Compare package.json version and GitHub tag
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Ger package.json version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: packages/app
+      - name: Compare package.json version and latest GitHub releases version
         id: compare-versions
         env:
-          PACKAGE_JSON_VERSION: ${{ steps.get-version-package-json.outputs.result }}
-          GITHUB_VERSION: ${{ steps.get-version-github-releases.outputs.result }}
+          PACKAGE_JSON_VERSION: ${{ steps.package-version.outputs.current-version }}
         run: |
+          GITHUB_VERSION=$(curl -s "https://api.github.com/repos/ondrejnedoma/voyalert/releases" | jq -r 'if length > 0 then .[0].name else "0" end')
           if [ "$GITHUB_VERSION" == "$PACKAGE_JSON_VERSION" ]; then
             echo "Latest version on GitHub releases matches version in package.json"
             echo "version=false" >> "$GITHUB_OUTPUT"
@@ -97,6 +91,14 @@ jobs:
         with:
           name: aab
           path: packages/app/android/app/build/outputs/bundle/release/app-release.aab
+      - name: Create partial changelog
+        run: |
+          awk 's{ print ""; print}; $0~v {print; s=1; next}; s=0' RS= v=$VERSION CHANGELOG.md | awk 'NR>1' > changelog-partial.md
+      - name: Artifact partial changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: partial-changelog
+          path: changelog-partial.md
   push-gh:
     runs-on: ubuntu-latest
     needs:
@@ -110,8 +112,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: apk
+      - name: Download partial changelog artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: partial-changelog
       - name: 'Create GitHub release'
         uses: ncipollo/release-action@v1
         with:
           artifacts: '*.apk'
+          bodyFile: changelog-partial.md
           tag: ${{ env.VERSION}}

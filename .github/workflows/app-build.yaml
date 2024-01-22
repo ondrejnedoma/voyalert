@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  VOYALERT_UPLOAD_KEY_ALIAS: ${{ secrets.VOYALERT_UPLOAD_KEY_ALIAS }}
+  VOYALERT_UPLOAD_STORE_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_STORE_PASSWORD }}
+  VOYALERT_UPLOAD_KEY_PASSWORD: ${{ secrets.VOYALERT_UPLOAD_KEY_PASSWORD }}
 jobs:
   evaluate-version-gh:
     runs-on: ubuntu-latest
@@ -55,29 +59,31 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-      - name: Build unsigned APK
+      - name: Decode keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'voyalert.keystore'
+          fileDir: 'packages/app/android/app'
+          encodedString: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
+      - name: Configure signing vars
+        run: |
+          cd packages/app/android
+          echo VOYALERT_UPLOAD_STORE_FILE=voyalert.keystore >> gradle.properties
+          echo VOYALERT_UPLOAD_KEY_ALIAS=$VOYALERT_UPLOAD_KEY_ALIAS >> gradle.properties
+          echo VOYALERT_UPLOAD_STORE_PASSWORD=$VOYALERT_UPLOAD_STORE_PASSWORD >> gradle.properties
+          echo VOYALERT_UPLOAD_KEY_PASSWORD=$VOYALERT_UPLOAD_KEY_PASSWORD >> gradle.properties
+      - name: Build APK
         run: |
           cd packages/app/android
           chmod +x gradlew
-          ./gradlew assembleRelease -Punsigned
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: packages/app/android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.VOYALERT_UPLOAD_STORE_BASE64 }}
-          alias: ${{ secrets.VOYALERT_UPLOAD_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.VOYALERT_UPLOAD_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.VOYALERT_UPLOAD_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: '34.0.0'
+          ./gradlew assembleRelease
       - name: Artifact APK
         uses: actions/upload-artifact@v4
         with:
           name: apk
           path: packages/app/android/app/build/outputs/apk/release/*.apk
-      - name: Build signed AAB
+      - name: Build AAB
         run: |
-          ls packages/app/android/app/build/outputs/apk/release
           cd packages/app/android
           chmod +x gradlew
           ./gradlew bundleRelease

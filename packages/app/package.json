@@ -10,6 +10,7 @@
     "test": "jest",
     "build-aab": "cd android && gradlew bundleRelease",
     "build-apk": "cd android && gradlew assembleRelease",
+    "build-apk-unsigned": "cd android && gradlew assembleRelease -Punsigned",
     "gradlew-clean": "node gradlewClean.js"
   },
   "dependencies": {

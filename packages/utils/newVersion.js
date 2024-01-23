@@ -42,7 +42,7 @@ const allPackages = fs.readdirSync('../');
 
 for (const folder of allPackages) {
   const folderPath = `../${folder}/package.json`;
-  const packageJson = fs.readFileSync(folderPath);
+  const packageJson = JSON.parse(fs.readFileSync(folderPath));
   packageJson.version = newVersion;
   if (folder === 'app') {
     const versionCode =
@@ -56,6 +56,7 @@ for (const folder of allPackages) {
       .replace(/versionCode\s+\d+/, `versionCode ${versionCode}`)
       .replace(/versionName\s+"[^"]+"/, `versionName "${newVersion}"`);
     fs.writeFileSync(buildGradlePath, newBuildGradle);
+    console.log(chalk.bold.bgMagentaBright(' Updated build.gradle '));
   }
   fs.writeFileSync(folderPath, JSON.stringify(packageJson, null, 2));
   console.log(

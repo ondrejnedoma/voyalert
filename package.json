@@ -6,8 +6,10 @@
   ],
   "scripts": {
     "postinstall": "patch-package && npm run i18n && husky install",
+    "precommit": "npm run app:package-json-version-code && npm run backend:docker-compose-tag",
     "app:dev": "npm run dev --workspace @voyalert/app",
     "app:gradlew-clean": "npm run gradlew-clean --workspace @voyalert/utils",
+    "app:package-json-version-code": "npm run package-json-version-code --workspace @voyalert/app",
     "app:build-aab": "npm run build-aab --workspace @voyalert/app",
     "app:build-apk": "npm run build-apk --workspace @voyalert/app",
     "app:build-apk-unsigned": "npm run build-apk-unsigned --workspace @voyalert/app",

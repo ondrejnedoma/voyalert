@@ -42,7 +42,7 @@ const allPackages = fs.readdirSync('../');
 
 for (const folder of allPackages) {
   const folderPath = `../${folder}/package.json`;
-  const packageJson = fs.readFileSyncfolderPath;
+  const packageJson = fs.readFileSync(folderPath);
   packageJson.version = newVersion;
   if (folder === 'app') {
     const versionCode =

@@ -8,7 +8,7 @@ const updateKind = prompt('> ');
 
 const rootPackageJson = JSON.parse(fs.readFileSync('../../package.json'));
 const oldVersion = rootPackageJson.version;
-const versionArray = oldVersion.split('.');
+const versionArray = oldVersion.split('.').map(el => parseInt(el));
 
 switch (updateKind) {
   case 'M':
@@ -51,7 +51,7 @@ for (const folder of allPackages) {
       parseInt(versionArray[2]);
     packageJson.versionCode = versionCode;
     const buildGradlePath = '../app/android/app/build.gradle';
-    const buildGradle = fs.readFileSync(buildGradlePath);
+    const buildGradle = fs.readFileSync(buildGradlePath, 'utf8');
     const newBuildGradle = buildGradle
       .replace(/versionCode\s+\d+/, `versionCode ${versionCode}`)
       .replace(/versionName\s+"[^"]+"/, `versionName "${newVersion}"`);

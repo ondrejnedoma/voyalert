@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "get-ip": "node getIp.js",
-    "setup-modules": "node reinstallModules.js"
+    "remove-modules": "node removeModules.js",
+    "new-version": "node newVersion.js"
   },
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",
   "dependencies": {
     "chalk": "^5.3.0",
-    "ip": "^1.1.8"
+    "ip": "^1.1.8",
+    "prompt-sync": "^4.2.0"
   }
 }

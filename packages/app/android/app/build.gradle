@@ -71,24 +71,6 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-// Convert version string to version code
-def getVersionCodeFromVersionName(versionName) {
-    def versionComponents = versionName.split("\\.")
-    if (versionComponents.size() != 3) {
-        throw new GradleException("Invalid version format. Must be in the format major.minor.patch")
-    }
-    return (versionComponents[0].toInteger() * 10000 +
-            versionComponents[1].toInteger() * 100 +
-            versionComponents[2].toInteger())
-}
-
-// Function to retrieve the versionName from package.json
-def getVersionFromNpm() {
-    def inputFile = new File("../package.json")
-    def packageJson = new JsonSlurper().parseText(inputFile.text)
-    return packageJson["version"]
-}
-
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -100,8 +82,8 @@ android {
         applicationId "me.ondrejnedoma.voyalert"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode getVersionCodeFromVersionName(getVersionFromNpm())
-        versionName getVersionFromNpm()
+        versionCode 300
+        versionName "0.3.0"
         setProperty("archivesBaseName", "voyalert")
     }
     signingConfigs {

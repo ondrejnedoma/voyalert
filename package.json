@@ -16,7 +16,8 @@
     "build": "npm run app:build && npm run backend:build",
     "i18n": "npm run start --workspace @voyalert/i18n",
     "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
-    "utils:reinstall-modules": "npm run reinstall-modules --workspace @voyalert/utils"
+    "utils:remove-modules": "npm run remove-modules --workspace @voyalert/utils",
+    "utils:new-version": "npm run new-version --workspace @voyalert/utils"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",

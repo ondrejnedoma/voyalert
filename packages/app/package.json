@@ -1,6 +1,7 @@
 {
   "name": "@voyalert/app",
   "version": "0.3.0",
+  "versionCode": 300,
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -11,8 +12,7 @@
     "build-aab": "cd android && gradlew bundleRelease",
     "build-apk": "cd android && gradlew assembleRelease",
     "build-apk-unsigned": "cd android && gradlew assembleRelease -Punsigned",
-    "gradlew-clean": "node gradlewClean.js",
-    "package-json-version-code": "node packageJsonVersionCode.js"
+    "gradlew-clean": "node gradlewClean.js"
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.2",

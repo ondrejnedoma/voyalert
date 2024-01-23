@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nodemon -V index.js",
     "start": "node index.js",
-    "build": "node build.js",
-    "docker-compose-tag": "node dockerComposeTag.js"
+    "build": "node build.js"
   },
   "author": "ondrejnedoma",
   "license": "AGPL-3.0",

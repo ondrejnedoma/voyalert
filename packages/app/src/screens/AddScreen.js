@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {
   Button,
+  IconButton,
   RadioButton,
   Snackbar,
   Text,
@@ -13,6 +14,7 @@ import DataSourceDialog from '../DataSourceDialog';
 import apiAdd from '../api/ApiAdd';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
 export default function AddScreen({navigation}) {
   const {t} = useTranslation();
@@ -50,14 +52,21 @@ export default function AddScreen({navigation}) {
     setDataSourceDialogContent(content);
     setDataSourceDialogVisible(true);
   };
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle
-        withLoading={true}
-        loading={loading}>
-        Add Voy
-      </ScreenTitle>
       <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsLeft={appBarButtonsLeft} />
+        <ScreenTitle
+          withLoading={true}
+          loading={loading}>
+          Add Voy
+        </ScreenTitle>
         <Text
           style={{marginBottom: 4}}
           variant="titleMedium">

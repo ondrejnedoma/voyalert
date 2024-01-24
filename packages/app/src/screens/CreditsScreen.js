@@ -1,12 +1,13 @@
 import React from 'react';
-import {Linking, SafeAreaView, ScrollView} from 'react-native';
+import {Linking, SafeAreaView, ScrollView, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 
 import OneCreditsItem from '../components/OneCreditsItem';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
-export default function CreditsScreen() {
+export default function CreditsScreen({navigation}) {
   const {t} = useTranslation();
   const creditsItems = [
     {
@@ -86,28 +87,37 @@ export default function CreditsScreen() {
     },
   ];
   const theme = useTheme();
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle>{t('credits.title')}</ScreenTitle>
-      <Text
-        style={{marginHorizontal: 24, marginBottom: 16}}
-        variant="bodySmall">
-        {t('credits.creditsText')}
+      <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsLeft={appBarButtonsLeft} />
+        <ScreenTitle>{t('credits.title')}</ScreenTitle>
         <Text
-          style={{
-            textDecorationLine: 'underline',
-            color: theme.colors.primary,
-          }}
-          variant="bodySmall"
-          onPress={() =>
-            Linking.openURL(
-              'https://github.com/ondrejnedoma/voyalert/issues/new',
-            )
-          }>
-          {t('credits.openIssue')}
+          style={{marginBottom: 16}}
+          variant="bodySmall">
+          {t('credits.creditsText')}
+          <Text
+            style={{
+              textDecorationLine: 'underline',
+              color: theme.colors.primary,
+            }}
+            variant="bodySmall"
+            onPress={() =>
+              Linking.openURL(
+                'https://github.com/ondrejnedoma/voyalert/issues/new',
+              )
+            }>
+            {t('credits.openIssue')}
+          </Text>
+          .
         </Text>
-        .
-      </Text>
+      </View>
       <ScrollView>
         {creditsItems.map(el => (
           <OneCreditsItem

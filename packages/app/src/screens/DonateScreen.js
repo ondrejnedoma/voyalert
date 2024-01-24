@@ -5,8 +5,9 @@ import {Text, useTheme} from 'react-native-paper';
 import OneDonateItem from '../components/OneDonateItem';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
-export default function DonateScreen() {
+export default function DonateScreen({navigation}) {
   const {t} = useTranslation();
   const donateItems = [
     {
@@ -35,11 +36,19 @@ export default function DonateScreen() {
       note: t('donate.items.ltc'),
     },
   ];
-
   const theme = useTheme();
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle>{t('donate.title')}</ScreenTitle>
+      <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsLeft={appBarButtonsLeft} />
+        <ScreenTitle>{t('donate.title')}</ScreenTitle>
+      </View>
       <ScrollView>
         <View style={{marginHorizontal: 24}}>
           <Text

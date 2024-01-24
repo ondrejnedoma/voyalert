@@ -6,16 +6,14 @@ import SourceLogo from './SourceLogo';
 
 export default function ScreenTitle({
   children,
-  smallMarginTop,
   withLoading,
   loading,
   withDataSouceIcon,
   dataSource,
   dialog,
 }) {
-  const marginTop = dialog ? 0 : smallMarginTop ? 32 : 84;
+  const marginTop = dialog ? 0 : 32;
   const marginBottom = dialog ? 0 : 42;
-  const marginHorizontal = dialog ? 0 : 24;
   const variant = dialog ? 'headlineLarge' : 'displaySmall';
   if (withLoading && withDataSouceIcon) {
     return (
@@ -23,7 +21,6 @@ export default function ScreenTitle({
         style={{
           marginTop,
           marginBottom,
-          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
           gap: 16,
@@ -42,7 +39,6 @@ export default function ScreenTitle({
         style={{
           marginTop,
           marginBottom,
-          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
           gap: 16,
@@ -57,7 +53,6 @@ export default function ScreenTitle({
         style={{
           marginTop,
           marginBottom,
-          marginHorizontal,
           flexDirection: 'row',
           alignItems: 'center',
           gap: 16,
@@ -75,7 +70,6 @@ export default function ScreenTitle({
         style={{
           marginTop,
           marginBottom,
-          marginHorizontal,
         }}
         variant={variant}>
         {children}

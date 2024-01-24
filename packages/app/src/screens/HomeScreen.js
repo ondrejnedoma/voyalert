@@ -15,6 +15,7 @@ import apiList from '../api/ApiList';
 import HomeScreenMenu from '../components/HomeScreenMenu';
 import OneVoy from '../components/OneVoy';
 import ScreenTitle from '../components/ScreenTitle';
+import AppBar from '../components/AppBar';
 
 export default function HomeScreen({navigation}) {
   const [voyList, setVoyList] = React.useState([]);
@@ -50,22 +51,25 @@ export default function HomeScreen({navigation}) {
       handleList();
     }, []),
   );
+  const appBarButtonsRight = [
+    {
+      icon: 'refresh',
+      onPress: handleList,
+      disabled: loading,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <IconButton
-          icon="refresh"
-          size={24}
-          onPress={handleList}
-          disabled={loading}
-        />
-        <HomeScreenMenu
-          visible={menuVisible}
-          setVisible={setMenuVisible}
-          handleItemPress={handleItemPress}
-        />
+      <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsRight={appBarButtonsRight}>
+          <HomeScreenMenu
+            visible={menuVisible}
+            setVisible={setMenuVisible}
+            handleItemPress={handleItemPress}
+          />
+        </AppBar>
+        <ScreenTitle>VoyAlert</ScreenTitle>
       </View>
-      <ScreenTitle smallMarginTop={true}>VoyAlert</ScreenTitle>
       {voyList.map(el => (
         <OneVoy
           key={el.dataSource + el.voyName}

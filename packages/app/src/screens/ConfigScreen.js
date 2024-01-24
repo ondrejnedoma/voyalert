@@ -7,6 +7,7 @@ import notifee from '@notifee/react-native';
 import apiDelete from '../api/ApiDelete';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
 export default function ConfigScreen({route, navigation}) {
   const {t} = useTranslation();
@@ -28,25 +29,33 @@ export default function ConfigScreen({route, navigation}) {
       }
     });
   };
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
+  const appBarButtonsRight = [
+    {
+      icon: 'delete',
+      onPress: handleDelete,
+      disabled: loading,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <IconButton
-          icon="delete"
-          size={24}
-          onPress={handleDelete}
-          disabled={loading}
-        />
-      </View>
-      <ScreenTitle
-        smallMarginTop={true}
-        withDataSouceIcon={true}
-        dataSource={dataSource}
-        withLoading={true}
-        loading={loading}>
-        {voyName}
-      </ScreenTitle>
       <View style={{marginHorizontal: 24}}>
+        <AppBar
+          buttonsLeft={appBarButtonsLeft}
+          buttonsRight={appBarButtonsRight}
+        />
+        <ScreenTitle
+          withDataSouceIcon={true}
+          dataSource={dataSource}
+          withLoading={true}
+          loading={loading}>
+          {voyName}
+        </ScreenTitle>
         <Text variant="titleMedium">{t('config.stopsToAlertAt')}</Text>
         <Button
           style={{alignSelf: 'flex-start', marginTop: 8}}

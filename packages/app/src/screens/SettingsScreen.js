@@ -7,8 +7,9 @@ import ServerURLDialog, {
 import OneSettingsItem from '../components/OneSettingsItem';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
-export default function SettingsScreen() {
+export default function SettingsScreen({navigation}) {
   const {t} = useTranslation();
   const [serverURLDialogVisible, setServerURLDialogVisible] =
     React.useState(false);
@@ -33,9 +34,18 @@ export default function SettingsScreen() {
       fetchData();
     }
   }, [serverURLDialogVisible]);
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle>{t('settings.title')}</ScreenTitle>
+      <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsLeft={appBarButtonsLeft} />
+        <ScreenTitle>{t('settings.title')}</ScreenTitle>
+      </View>
       <ScrollView>
         {settingsItems.map(el => (
           <OneSettingsItem

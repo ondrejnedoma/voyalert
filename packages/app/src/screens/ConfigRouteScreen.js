@@ -11,7 +11,7 @@ import OneRouteStop from '../components/OneRouteStop';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
 
-export default function ConfigRouteScreen({route}) {
+export default function ConfigRouteScreen({route, navigation}) {
   const {dataSource, voyName} = route.params;
   const {t} = useTranslation();
   const [stops, setStops] = React.useState();
@@ -111,13 +111,22 @@ export default function ConfigRouteScreen({route}) {
     }
     return false;
   };
+  const appBarButtonsLeft = [
+    {
+      icon: 'arrow-left',
+      onPress: navigation.goBack,
+    },
+  ];
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScreenTitle
-        withLoading={true}
-        loading={loading}>
-        {t('configRoute.title')}
-      </ScreenTitle>
+      <View style={{marginHorizontal: 24}}>
+        <AppBar buttonsLeft={appBarButtonsLeft} />
+        <ScreenTitle
+          withLoading={true}
+          loading={loading}>
+          {t('configRoute.title')}
+        </ScreenTitle>
+      </View>
       <ScrollView>
         {stops && config
           ? stops.map(stop => (

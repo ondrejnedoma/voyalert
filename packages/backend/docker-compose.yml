@@ -1,19 +1,16 @@
 version: '3'
 services:
   backend:
-    container_name: 'voyalert-backend'
-    image: ondrejnedoma/voyalert-backend:0.3.0
-    restart: 'unless-stopped'
+    container_name: voyalert-backend
+    image: ondrejnedoma/voyalert-backend:0.4.0
+    restart: unless-stopped
     ports:
       - '3000:3000'
     environment:
-      - MONGODB_URL=127.0.0.1:27017/voyalert
+      - MONGODB_URL=mongo:27017/voyalert
     volumes:
       - ./firebase.json:/app/firebase.json
   mongo:
-    container_name: 'voyalert-mongo'
+    container_name: voyalert-mongo
     image: mongo
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: voyalert

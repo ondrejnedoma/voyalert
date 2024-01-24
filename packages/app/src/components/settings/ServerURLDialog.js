@@ -1,7 +1,5 @@
 import React from 'react';
-import {Linking, View} from 'react-native';
 import {
-  ActivityIndicator,
   Button,
   Dialog,
   Portal,
@@ -13,9 +11,9 @@ import {
 } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import apiPing from './api/ApiPing';
+import apiPing from '../../api/ApiPing';
 import i18next from 'i18next';
-import ScreenTitle from './components/ScreenTitle';
+import ScreenTitle from '../ScreenTitle';
 import {useTranslation} from 'react-i18next';
 
 export default function ServerURLDialog({visible, setVisible}) {
@@ -129,6 +127,6 @@ export async function serverURLState() {
   if (valueCustomServerURL !== null) {
     return valueCustomServerURL;
   } else {
-    return i18next.t('settings.item.serverURL.default');
+    return i18next.t('settings.items.serverURL.default');
   }
 }

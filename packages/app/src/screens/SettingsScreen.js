@@ -1,7 +1,9 @@
 import React from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
 
-import ServerURLDialog, {serverURLState} from '../ServerURLDialog';
+import ServerURLDialog, {
+  serverURLState,
+} from '../components/settings/ServerURLDialog';
 import OneSettingsItem from '../components/OneSettingsItem';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';

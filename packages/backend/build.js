@@ -11,7 +11,8 @@ docker.ping(err => {
     );
     process.exit(1);
   }
-  const imageName = 'voyalert/backend:' + process.env.npm_package_version;
+  const imageName =
+    'ondrejnedoma/voyalert-backend:' + process.env.npm_package_version;
   console.log(
     chalk.bold.bgMagentaBright(` Building docker image ${imageName} `),
   );

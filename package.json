@@ -20,12 +20,12 @@
     "utils:new-version": "npm run new-version --workspace @voyalert/utils"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.4",
-    "@commitlint/config-conventional": "^18.4.4",
+    "@commitlint/cli": "^18.5.0",
+    "@commitlint/config-conventional": "^18.5.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "concurrently": "^8.2.2",
     "husky": "^8.0.3",
     "patch-package": "^8.0.0",
-    "prettier": "^3.2.2"
+    "prettier": "^3.2.4"
   }
 }

@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import promptSync from 'prompt-sync';
 const prompt = promptSync();
+import yaml from 'js-yaml';
 import chalk from 'chalk';
 
 console.log(chalk.bold.bgMagentaBright(' Major/minor/patch? (M, m, p) '));
@@ -57,6 +58,12 @@ for (const folder of allPackages) {
       .replace(/versionName\s+"[^"]+"/, `versionName "${newVersion}"`);
     fs.writeFileSync(buildGradlePath, newBuildGradle);
     console.log(chalk.bold.bgMagentaBright(' Updated build.gradle '));
+  } else if (folder === 'backend') {
+    const dockerComposePath = '../backend/docker-compose.yml';
+    const dockerCompose = yaml.load(fs.readFileSync(dockerComposePath));
+    dockerCompose.services.backend.image = `ondrejnedoma/voyalert-backend:${newVersion}`;
+    const dockerComposeYaml = yaml.dump(dockerCompose);
+    fs.writeFileSync(dockerComposePath, dockerComposeYaml);
   }
   fs.writeFileSync(folderPath, JSON.stringify(packageJson, null, 2));
   console.log(

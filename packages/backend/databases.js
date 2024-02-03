@@ -11,11 +11,11 @@ import 'dotenv/config';
 let mongoURL = process.env.MONGODB_URL;
 if (!mongoURL) {
   console.warn(
-    'No MONGODB_URL environmental variable was specified. Using the default: 127.0.0.1:27017/voyalert',
+    'No MONGODB_URL environmental variable was specified. Using the default: mongodb://127.0.0.1:27017/voyalert',
   );
-  mongoURL = '127.0.0.1:27017/voyalert';
+  mongoURL = 'mongodb://127.0.0.1:27017/voyalert';
 }
-mongoose.connect('mongodb://' + mongoURL);
+mongoose.connect(mongoURL);
 
 import {SzCachedRoute, IdsokCachedRoute} from './db-models/cachedRoute.js';
 export const routeCaches = {sz: SzCachedRoute, idsok: IdsokCachedRoute};

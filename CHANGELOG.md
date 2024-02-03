@@ -1,4 +1,10 @@
+# 0.4.0 (unreleased)
+
+- Switched to Expo 50.0.3 from preview
+- Added back button to AppBar
+
 # 0.3.0
+
 - Added settings screen
 - Implemented async-storage for saving settings
 - Option to switch the backend server ddirectly in the app

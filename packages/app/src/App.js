@@ -25,6 +25,8 @@ import CreditsScreen from './screens/CreditsScreen';
 import DonateScreen from './screens/DonateScreen';
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import StartScreen from './screens/StartScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +48,14 @@ function App() {
     themeToApply.colors.background,
     colorScheme !== 'dark',
   );
-
+  let initialRouteName = 'Start';
+  AsyncStorage.getItem('started').then(started => {
+    if (started !== null) {
+      if (started === true) {
+        initialRouteName = 'Home';
+      }
+    }
+  });
   return (
     <PaperProvider theme={themeToApply}>
       <NavigationContainer theme={themeToApply}>
@@ -55,11 +64,15 @@ function App() {
           barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
         />
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName={initialRouteName}
           screenOptions={{
             headerShown: false,
             animation: 'slide_from_right',
           }}>
+          <Stack.Screen
+            name="Start"
+            component={StartScreen}
+          />
           <Stack.Screen
             name="Home"
             component={HomeScreen}

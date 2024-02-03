@@ -3,9 +3,15 @@
     "missingFields_one": "Field {{missingFields, list}} is required",
     "missingFields_other": "Fields {{missingFields, list}} are required",
     "dataSourceNotAccepted": "\"{{dataSource}}\" is not an acceptable value for field dataSource. Accepted values are: {{acceptedDataSources, list}}",
+    "notificationTypeNotAccepted": "\"{{notificationType}}\" is not an acceptable value for field notificationType. Accepted values are: {{acceptedNotificationTypes, list}}",
     "routeNotCached": "The route for voy {{dataSource}} {{voyName}} is not cached",
     "subscriptionNotFound": "Voy {{dataSource}} {{voyName}} for Firebase token {{firebaseToken}} not found",
     "subscriptionAlreadyExists": "Voy {{dataSource}} {{voyName}} already exists for Firebase token {{firebaseToken}}"
+  },
+  "start": {
+    "welcome": "Welcome to VoyAlert!",
+    "language": "Choose your language",
+    "notificationType": "Choose your notification type. Firebase is more reliable, faster and consumes less battery. HTTP is only recommended if you can't use Firebase for some reason, for example, if your phone is not running Google services or you downloaded this app from F-droid."
   },
   "home": {
     "menu": {

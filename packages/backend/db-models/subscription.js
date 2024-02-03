@@ -1,9 +1,10 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const subscriptionSchema = new mongoose.Schema({
   dataSource: String,
   voyName: String,
-  firebaseToken: String,
+  id: String,
+  notificationType: String,
   config: {
     type: {
       stops: [
@@ -18,10 +19,10 @@ const subscriptionSchema = new mongoose.Schema({
         },
       ],
     },
-    default: { stops: [] },
+    default: {stops: []},
   },
 });
 
-const Subscription = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
 export default Subscription;

@@ -1,122 +1,133 @@
-import express from "express";
-import { routeCaches } from "./databases.js";
+import express from 'express';
+import {routeCaches} from './databases.js';
 import {
   requireFieldsMiddleware,
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
+  isNotificationTypeAcceptedMiddleware,
   subscriptionExistsMiddleware,
   subscriptionNotExistsMiddleware,
-} from "./middlewares.js";
-import { i18nRegister } from "./i18nHandler.js";
-import Subscription from "./db-models/subscription.js";
+} from './middlewares.js';
+import {i18nRegister} from './i18nHandler.js';
+import Subscription from './db-models/subscription.js';
+import PendingNotification from './db-models/pendingNotification.js';
 
 const app = express();
 
 app.use(express.json());
 i18nRegister(app);
 
-app.get("/ping", (req, res) => {
-  res.json({ ok: true });
+app.get('/ping', (req, res) => {
+  res.json({ok: true});
 });
 
 app.post(
-  "/add",
-  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  '/add',
+  requireFieldsMiddleware(['dataSource', 'voyName', 'id', 'notificationType']),
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
+  isNotificationTypeAcceptedMiddleware,
   subscriptionNotExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyName, firebaseToken } = req.body;
+    const {dataSource, voyName, id, notificationType} = req.body;
     Subscription.create({
       dataSource,
       voyName,
-      firebaseToken,
+      id,
+      notificationType,
     });
-    res.json({ ok: true });
-  }
+    res.json({ok: true});
+  },
 );
 
 app.post(
-  "/delete",
-  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  '/delete',
+  requireFieldsMiddleware(['dataSource', 'voyName', 'id']),
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyName, firebaseToken } = req.body;
+    const {dataSource, voyName, id} = req.body;
     await Subscription.deleteOne({
       dataSource,
       voyName,
-      firebaseToken,
+      id,
     });
-    res.json({ ok: true });
-  }
+    res.json({ok: true});
+  },
 );
 
+app.get('/list', requireFieldsMiddleware(['id']), async (req, res) => {
+  const {id} = req.query;
+  const data = await Subscription.find({id});
+  res.json({ok: true, data});
+});
+
 app.get(
-  "/list",
-  requireFieldsMiddleware(["firebaseToken"]),
+  '/pendingNotifications',
+  requireFieldsMiddleware(['id']),
   async (req, res) => {
-    const { firebaseToken } = req.query;
-    const list = await Subscription.find({ firebaseToken });
-    res.json({ ok: true, data: list });
-  }
+    const {id} = req.query;
+    const pendingNotifications = await PendingNotification.find({id});
+    const data = pendingNotifications.map(notification => notification.data);
+    PendingNotification.deleteMany({id});
+    res.json({ok: true, data});
+  },
 );
 
 app.get(
-  "/route",
-  requireFieldsMiddleware(["dataSource", "voyName"]),
+  '/route',
+  requireFieldsMiddleware(['dataSource', 'voyName']),
   isDataSourceAcceptedMiddleware,
   isRouteCachedMiddleware,
   async (req, res) => {
-    const { dataSource, voyName } = req.query;
-    const stops = (await routeCaches[dataSource].findOne({ name: voyName }))
-      .stops;
-    return res.json({ ok: true, data: stops });
-  }
+    const {dataSource, voyName} = req.query;
+    const data = (await routeCaches[dataSource].findOne({name: voyName})).stops;
+    return res.json({ok: true, data});
+  },
 );
 
 app.get(
-  "/getConfig",
-  requireFieldsMiddleware(["dataSource", "voyName", "firebaseToken"]),
+  '/getConfig',
+  requireFieldsMiddleware(['dataSource', 'voyName', 'id']),
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyName, firebaseToken } = req.query;
-    const config = (
+    const {dataSource, voyName, id} = req.query;
+    const data = (
       await Subscription.findOne({
         dataSource,
         voyName,
-        firebaseToken,
+        id,
       })
     ).config;
     return res.json({
       ok: true,
-      data: config,
+      data,
     });
-  }
+  },
 );
 
 app.post(
-  "/setConfigForStop",
+  '/setConfigForStop',
   requireFieldsMiddleware([
-    "dataSource",
-    "voyName",
-    "firebaseToken",
-    "stop",
-    "field",
-    "value",
+    'dataSource',
+    'voyName',
+    'id',
+    'stop',
+    'field',
+    'value',
   ]),
   isDataSourceAcceptedMiddleware,
   subscriptionExistsMiddleware,
   async (req, res) => {
-    const { dataSource, voyName, firebaseToken, stop, field, value } = req.body;
+    const {dataSource, voyName, id, stop, field, value} = req.body;
     const subscription = await Subscription.findOne({
       dataSource,
       voyName,
-      firebaseToken,
+      id,
     });
     const stopIndex = subscription.config.stops.findIndex(
-      (oneStop) => oneStop.name === stop
+      oneStop => oneStop.name === stop,
     );
     if (stopIndex < 0) {
       let newStop = {
@@ -134,16 +145,16 @@ app.post(
       subscription.config.stops[stopIndex][field] = value;
     }
     subscription.save();
-    return res.json({ ok: true });
-  }
+    return res.json({ok: true});
+  },
 );
 
-app.get("/privacypolicy", (req, res) => {
-  res.sendFile("voyalertprivacypolicy.docx", { root: "." });
+app.get('/privacypolicy', (req, res) => {
+  res.sendFile('voyalertprivacypolicy.docx', {root: '.'});
 });
 
-process.on("SIGINT", () => {
-  console.log("Received SIGINT signal. Shutting down gracefully...");
+process.on('SIGINT', () => {
+  console.log('Received SIGINT signal. Shutting down gracefully...');
   process.exit(0);
 });
 

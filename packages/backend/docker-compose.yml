@@ -5,7 +5,7 @@ services:
     image: ondrejnedoma/voyalert-backend:0.4.0
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - 3000:3000
     environment:
       - MONGODB_URL=mongodb://mongo:27017/voyalert
     volumes:
@@ -22,3 +22,4 @@ services:
       - 3001:3001
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/voyalert
+      PORT: 3001

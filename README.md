@@ -8,6 +8,10 @@
 An app that alerts you (by push notification or a persistent alarm) \
 upon the arrival or departure of a public transport vehicle from a stop
 
+# UPDATE
+
+I'll be taking a little break from the development of VoyAlert. I'll be accepting pull requests. Please open all pull requests against the 0.4.0 branch.
+
 ## Packages
 
 This is a monorepo managed by npm workspaces. \

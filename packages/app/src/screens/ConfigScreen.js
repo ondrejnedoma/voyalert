@@ -1,6 +1,6 @@
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
-import {Button, IconButton, Snackbar, Text} from 'react-native-paper';
+import {View, SafeAreaView} from 'react-native';
+import {Button, Snackbar, Text} from 'react-native-paper';
 
 import notifee from '@notifee/react-native';
 

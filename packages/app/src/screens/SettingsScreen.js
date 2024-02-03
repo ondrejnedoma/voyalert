@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, ScrollView} from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 
 import ServerURLDialog, {
   serverURLState,

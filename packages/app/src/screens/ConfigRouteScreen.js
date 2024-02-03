@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, ScrollView} from 'react-native';
+import {View, SafeAreaView, ScrollView} from 'react-native';
 import {Snackbar} from 'react-native-paper';
 
 import {useFocusEffect} from '@react-navigation/native';
@@ -10,6 +10,7 @@ import apiRoute from '../api/ApiRoute';
 import OneRouteStop from '../components/OneRouteStop';
 import ScreenTitle from '../components/ScreenTitle';
 import {useTranslation} from 'react-i18next';
+import AppBar from '../components/AppBar';
 
 export default function ConfigRouteScreen({route, navigation}) {
   const {dataSource, voyName} = route.params;

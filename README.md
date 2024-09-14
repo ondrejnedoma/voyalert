@@ -2,20 +2,13 @@
 
 ![Version](https://img.shields.io/github/package-json/v/ondrejnedoma/voyalert/master?label=version&color=6AD826)
 ![License](https://img.shields.io/github/license/ondrejnedoma/voyalert?color=6AD826)
-[![Translated](https://hosted.weblate.org/widget/voyalert/translation/svg-badge.svg)](https://hosted.weblate.org/engage/voyalert/)
 ![Stars](https://img.shields.io/github/stars/ondrejnedoma/voyalert?style=flat)
 
-An app that alerts you (by push notification or a persistent alarm) \
-upon the arrival or departure of a public transport vehicle from a stop
-
-# UPDATE
-
-I'll be taking a little break from the development of VoyAlert. I'll be accepting pull requests. Please open all pull requests against the 0.4.0 branch.
+An app that alerts you (by push notification or persistent alarm) upon the arrival or departure of a public transport vehicle from a stop
 
 ## Packages
 
-This is a monorepo managed by npm workspaces. \
-The individual components of the app are stored in separate packages:
+This is a monorepo managed by npm workspaces. The individual components of this project are stored in separate packages:
 
 | Package Name                          | Description                |
 | ------------------------------------- | -------------------------- |
@@ -34,42 +27,36 @@ COMING SOON
 
 ## Build
 
-This section covers how to build the full app — both [@voyalert/app](voyalert/app) and [@voyalert/backend](voyalert/backend). \
-**Consult the README files of the individual packages if you want to run them as dev or build them separately (COMING SOON)**. \
-**Note that building for iOS is NOT supported as of now**.
+This section covers how to build the full project — both [@voyalert/app](voyalert/app) and [@voyalert/backend](voyalert/backend). **Note that iOS is NOT supported as of now**.
 
 ### Requirements
 
 - Node and NPM
 - OpenJDK 17 — [download prebuilt from Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
-- Android 14 SDK (API 34) (installable within Android Studio)
+- Android Studio and Android 14 SDK (API 34)
 - Docker
-- Git (optional — only for `git clone`, the repository can also be downloaded as a ZIP)
+- Git (optional — only for `git clone`)
+
+### Steps
 
 1. Start by cloning this repository and installing the dependencies:
 
 ```sh
-git clone git@github.com:ondrejnedoma/voyalert.git
+git clone https://github.com/ondrejnedoma/voyalert
 cd voyalert
 npm i
 ```
 
-2. Add the Android platform-tools to PATH. This folder is by default %LOCALAPPDATA%\Android\Sdk\platform-tools
+2. Add the Android Studio platform-tools to PATH. This folder is by default %LOCALAPPDATA%\Android\Sdk\platform-tools
 
 3. Create the ANDROID_HOME environment variable. This folder is by default %LOCALAPPDATA%\Android\Sdk
 
-4. Set up the app signing keys and the according gradle variables. \
-   Use [these instructions](https://reactnative.dev/docs/signed-apk-android) on the React Native website for reference \
-   (more specific instructions COMING SOON).
+4. Set up the app signing keys and the according gradle variables. Use [these React Native instructions](https://reactnative.dev/docs/signed-apk-android) for reference.
 
-5. This step is optional. \
-   If you want to be able to use the custom built backend with the app (and not only the default prod server), \
-   you will need to replace the `voyalert/packages/app/android/app/google-services.json` file with your own one, obtained from the Firebase console. \
-   You will also need to generate a Firebase admin credential from the Google API console, \
-   and place it in `voyalert/packages/backend/voyalert-xxxxx-firebase.json`. \
-   Then rename `voyalert/packages/backend/EXAMPLE.env` to `.env`, \
-   and change the `GOOGLE_APPLICATION_CREDENTIALS` variable inside the file to match the Firebase admin credential filename. \
-   In this case `voyalert-xxxxx-firebase.json`.
+<!-- TODO -->
+
+5. This step is optional.
+   If you want to be able to use a custom backend with the app (and not only the default prod one), replace the `voyalert/packages/app/android/app/google-services.json` file with your own one, obtained from the [Firebase console](https://console.firebase.google.com/). Generate a Firebase service account private key, and place it in `voyalert/packages/backend/firebase.json`.
 
 6. Ensure Docker is up and ready to build the backend image:
 
@@ -77,32 +64,14 @@ npm i
 docker ps
 ```
 
-7. Run the `build` command. A new terminal window will pop up (the React Native Metro server), \
-   **you need to close that window for the build process to finish**:
+7. Run the `build` command. A new terminal window will pop up (the React Native Metro server), close that window for the build process to finish:
 
 ```sh
 npm run build
 ```
 
-8. If both the app and backend build process were successful, \
-   you will be able to find the app build at `voyalert/packages/app/android/app/build/outputs/bundle/release/app-release.aab`, \
-   and the backend will have built as a Docker image `voyalertbackend`.
-
-9. This step is optional. \
-   If you want to transfer the docker image to a different system, \
-   you can run this command to save it as a file at `voyalert/packages/backend/voyalertbackend.tar`. \
-   This file can then be transfered to a different system and loaded with `docker load -i voyalertbackend.tar`:
-
-```sh
-npm run backend:save
-```
+8. After the build finishes, the app AAB can be found in `voyalert/packages/app/android/app/build/outputs/bundle/release/app-release.aab`, and the backend as a Docker image `voyalertbackend`.
 
 ## Contributing
 
 Feel free to open issues and pull requests regarding anything you think would be beneficial for this project!
-
-You can help [translate VoyAlert at Hosted Weblate](https://hosted.weblate.org/engage/voyalert/)
-
-<a href="https://hosted.weblate.org/engage/voyalert/">
-<img src="https://hosted.weblate.org/widget/voyalert/translation/multi-auto.svg" alt="Translation status" />
-</a>

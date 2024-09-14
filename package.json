@@ -13,7 +13,7 @@
     "app:build-apk-unsigned": "npm run build-apk-unsigned --workspace @voyalert/app",
     "backend:dev": "npm run dev --workspace @voyalert/backend",
     "backend:build": "npm run build --workspace @voyalert/backend",
-    "build": "npm run app:build && npm run backend:build",
+    "build": "npm run app:build-aab && npm run backend:build",
     "i18n": "npm run start --workspace @voyalert/i18n",
     "utils:get-ip": "npm run get-ip --workspace @voyalert/utils",
     "utils:remove-modules": "npm run remove-modules --workspace @voyalert/utils",
